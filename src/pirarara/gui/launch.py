@@ -20,5 +20,6 @@ def app_run() -> int:
         int: アプリケーションの終了コード。
     """
     app = QApplication(sys.argv)
-    _ = MWindow()
+    w = MWindow()
+    w.show()
     return app.exec()

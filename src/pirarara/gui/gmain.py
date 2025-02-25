@@ -1,16 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 
-from PySide6 import QtUiTools
+from PySide6.QtCore import QMetaObject, QRect
+from PySide6.QtWidgets import QMainWindow, QMenuBar, QStatusBar, QWidget
 
 
-class MWindow:
-    def __init__(self):
+class MWindow(QMainWindow):
+    def setupUi(self, MainWindow):
 
-        aUILoader = QtUiTools.QUiLoader()
+        MainWindow.resize(415, 263)
 
-        ui_file_path = os.path.join(os.getcwd(), "main_window.ui")
-        self.main_window = aUILoader.load(ui_file_path)
-        self.main_window.show()
+        self.centralwidget = QWidget(MainWindow)
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        self.menubar = QMenuBar(MainWindow)
+        self.menubar.setGeometry(QRect(0, 0, 415, 33))
+        MainWindow.setMenuBar(self.menubar)
+
+        self.statusbar = QStatusBar(MainWindow)
+        MainWindow.setStatusBar(self.statusbar)
+
+        QMetaObject.connectSlotsByName(MainWindow)
