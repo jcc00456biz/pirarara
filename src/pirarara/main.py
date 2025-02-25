@@ -5,6 +5,7 @@ import os
 import sys
 
 from my_log import my_logging_setup
+from gui import app_run
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ def main() -> int:
     # エラーのサンプル
     logger.error("An error occurred.")
 
-    return 0
+    return app_run()
 
 
 if __name__ == "__main__":
