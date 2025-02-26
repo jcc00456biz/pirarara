@@ -3,6 +3,7 @@
 import os
 
 from pkg.const import __appname__, __version__
+from pkg.gui.custom import PirararaToolButton
 from pkg.gui.dialogs import AboutDialog
 from PySide6.QtCore import QRect, QSize, Qt
 from PySide6.QtGui import QIcon
@@ -43,19 +44,15 @@ class MWindow(QMainWindow):
         self.toolbar.setIconSize(QSize(48, 48))
         self.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.toolbar)
         self.toolbar.setMovable(False)
+
         # ツールボタン
-        self.tool_button = QToolButton()
-        # ツールボタンテキスト
-        self.tool_button.setText(f"{__appname__}")
-        # ツールボタンアイコン設定
         icon_dir = os.path.join(os.getcwd(), "icon")
         icon_file = os.path.join(icon_dir, "pirarara.svg")
         if os.path.exists(icon_file):
-            self.tool_button.setIcon(QIcon(icon_file))
-        # ツールボタンスタイル
-        self.tool_button.setToolButtonStyle(
-            Qt.ToolButtonStyle.ToolButtonTextUnderIcon
-        )
+            self.tool_button = PirararaToolButton(__appname__, icon_file)
+        else:
+            self.tool_button = PirararaToolButton(__appname__)
+
         # クリック時シグナルを受けるスロットと接続
         self.tool_button.clicked.connect(self.show_about_dialog)
         # ツールバーにツールボタンを配置
