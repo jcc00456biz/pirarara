@@ -3,6 +3,7 @@
 import os
 
 from pkg.const import __appname__, __version__
+from pkg.gui.dialogs import AboutDialog
 from PySide6.QtCore import QRect, QSize, Qt
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
@@ -55,6 +56,9 @@ class MWindow(QMainWindow):
         self.tool_button.setToolButtonStyle(
             Qt.ToolButtonStyle.ToolButtonTextUnderIcon
         )
+        # クリック時シグナルを受けるスロットと接続
+        self.tool_button.clicked.connect(self.show_about_dialog)
+        # ツールバーにツールボタンを配置
         self.toolbar.addWidget(self.tool_button)
 
         # コンボボックス
@@ -97,3 +101,8 @@ class MWindow(QMainWindow):
         # ステータスバー
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar)
+
+    def show_about_dialog(self):
+        dialog = AboutDialog(self)
+        # dialog.exec()
+        dialog.show()
