@@ -5,7 +5,7 @@ import os
 import sys
 
 from my_log import my_logging_setup
-from gui import app_run
+from pkg.gui import app_run
 
 logger = logging.getLogger(__name__)
 
@@ -37,12 +37,7 @@ def main() -> int:
     current_path = os.getcwd()
     my_logging_setup(current_path, "my.log", 100, 4)
 
-    # ログ出力サンプル
-    logger.info(f"カレントディレクトリ:{os.getcwd()}")
-
-    # エラーのサンプル
-    logger.error("An error occurred.")
-
+    # GUI起動
     return app_run()
 
 
