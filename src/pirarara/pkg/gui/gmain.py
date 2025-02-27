@@ -6,18 +6,18 @@ from pkg.const import __appname__, __version__
 from pkg.gui.custom import PirararaToolButton
 from pkg.gui.dialogs import AboutDialog
 from PySide6.QtCore import QRect, QSize, Qt
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QComboBox,
     QGraphicsView,
     QMainWindow,
     QMenuBar,
+    QMessageBox,
     QPlainTextEdit,
     QSplitter,
     QStatusBar,
     QTableWidget,
     QToolBar,
-    QToolButton,
     QTreeWidget,
     QVBoxLayout,
     QWidget,
@@ -46,10 +46,20 @@ class MWindow(QMainWindow):
         self.toolbar.setMovable(False)
 
         # ツールボタン
+        # QActionの作成
+        action_list = []
+        for i in range(4):
+            action = QAction(f"アクション{i}", self)
+            action.triggered.connect(
+                lambda: self.show_message(f"アクション{i}が選択されました")
+            )
+            action_list.append(action)
         icon_dir = os.path.join(os.getcwd(), "icon")
         icon_file = os.path.join(icon_dir, "pirarara.svg")
         if os.path.exists(icon_file):
-            self.tool_button = PirararaToolButton(__appname__, icon_file)
+            self.tool_button = PirararaToolButton(
+                __appname__, icon_file, action_list
+            )
         else:
             self.tool_button = PirararaToolButton(__appname__)
 
@@ -103,3 +113,7 @@ class MWindow(QMainWindow):
         dialog = AboutDialog(self)
         # dialog.exec()
         dialog.show()
+
+    def show_message(self, message):
+        # メッセージボックスでメッセージを表示
+        QMessageBox.information(self, "情報", message)
