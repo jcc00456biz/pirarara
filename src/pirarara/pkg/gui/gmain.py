@@ -5,7 +5,7 @@ import os
 from pkg.const import __appname__, __version__
 from pkg.gui.custom import PirararaToolButton
 from pkg.gui.dialogs import AboutDialog, ImportFileDialog
-from pkg.metadata import get_title_from_filename
+from pkg.metadata import set_media_info
 from PySide6.QtCore import QRect, QSize, Qt
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
@@ -120,7 +120,7 @@ class MWindow(QMainWindow):
 
         for fname in selected_files:
             print(fname)
-            ret = get_title_from_filename(fname)
+            ret = set_media_info(fname)
             print(ret)
 
     def show_message(self, message):

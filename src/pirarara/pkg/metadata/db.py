@@ -337,3 +337,24 @@ class MetaDataDB:
                     roe_data[col[1]] = str(d[index])
             ret_data.append(roe_data)
         return ret_data
+
+    def exists(self, column: str, check_data: str) -> bool:
+        """
+        指定されたカラムに特定のデータが存在するかを確認するメソッド。
+
+        Args:
+            column (str): 検索対象のカラム名。
+            check_data (str): 検索するデータ。
+
+        Returns:
+            bool: データが存在する場合はTrue、存在しない場合はFalse。
+        """
+        # 指定のカラムから検索する
+        sql = f"SELECT * FROM {self.table_name} " + f"WHERE {column}=?;"
+
+        with sqlite3.connect(self.db_file_path, isolation_level=None) as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, (check_data,))
+            data = cursor.fetchone()
+
+        return data is not None
