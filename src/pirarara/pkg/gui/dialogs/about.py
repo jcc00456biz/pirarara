@@ -11,7 +11,21 @@ from PySide6.QtWidgets import QDialog, QDialogButtonBox, QFormLayout, QLabel
 
 
 class AboutDialog(QDialog):
+    """
+    アプリケーションの情報を表示するダイアログクラス。
+
+    Args:
+        parent (QWidget, optional): 親ウィジェット。デフォルトはNone。
+    """
+
     def __init__(self, parent=None):
+        """
+        AboutDialogクラスのコンストラクタ。
+
+        Args:
+            parent (QWidget, optional): 親ウィジェット。デフォルトはNone。
+        """
+
         super().__init__(parent)
 
         # 画面タイトルの設定
@@ -56,10 +70,26 @@ class AboutDialog(QDialog):
         self.about_text.setText(description)
 
     def closeEvent(self, event: QCloseEvent):
+        """
+        ウィンドウが閉じられたときのイベントハンドラ。
+
+        Args:
+            event (QCloseEvent): ウィンドウが閉じられるイベント。
+        """
         gc.collect()
         event.accept()
 
     def renderer_svg(self, file_path: str, size: int) -> QPixmap:
+        """
+        SVGファイルを指定されたサイズのQPixmapにレンダリングする。
+
+        Args:
+            file_path (str): SVGファイルのパス。
+            size (int): レンダリングするサイズ。
+
+        Returns:
+            QPixmap: レンダリングされたQPixmapオブジェクト。
+        """
         renderer = QSvgRenderer(file_path)
         pixmap = QPixmap(size, size)
         pixmap.fill(Qt.GlobalColor.transparent)

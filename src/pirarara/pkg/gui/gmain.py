@@ -4,7 +4,8 @@ import os
 
 from pkg.const import __appname__, __version__
 from pkg.gui.custom import PirararaToolButton
-from pkg.gui.dialogs import AboutDialog
+from pkg.gui.dialogs import AboutDialog, ImportFileDialog
+from pkg.metadata import get_title_from_filename
 from PySide6.QtCore import QRect, QSize, Qt
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
@@ -45,28 +46,27 @@ class MWindow(QMainWindow):
         self.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.toolbar)
         self.toolbar.setMovable(False)
 
+        # ツールボタン定義
+        self.tool_button_define = (
+            ("IMPORT", "import.svg", self.show_import_file_dialog),
+            ("|", "", None),
+            (f"{__appname__} ", "pirarara.svg", self.show_about_dialog),
+        )
         # ツールボタン
-        # QActionの作成
-        action_list = []
-        for i in range(4):
-            action = QAction(f"アクション{i}", self)
-            action.triggered.connect(
-                lambda: self.show_message(f"アクション{i}が選択されました")
-            )
-            action_list.append(action)
-        icon_dir = os.path.join(os.getcwd(), "icon")
-        icon_file = os.path.join(icon_dir, "pirarara.svg")
-        if os.path.exists(icon_file):
-            self.tool_button = PirararaToolButton(
-                __appname__, icon_file, action_list
-            )
-        else:
-            self.tool_button = PirararaToolButton(__appname__)
-
-        # クリック時シグナルを受けるスロットと接続
-        self.tool_button.clicked.connect(self.show_about_dialog)
-        # ツールバーにツールボタンを配置
-        self.toolbar.addWidget(self.tool_button)
+        self.tool_buttons = []
+        for title, icon_file_name, slot in self.tool_button_define:
+            if title == "|":
+                self.toolbar.addSeparator()
+                continue
+            # アイコン
+            icon_dir = os.path.join(os.getcwd(), "icon")
+            icon_file_path = os.path.join(icon_dir, icon_file_name)
+            self.tool_buttons.append(PirararaToolButton(title, icon_file_path))
+            # スロット
+            if slot is not None:
+                self.tool_buttons[-1].clicked.connect(slot)
+            # ツールバーにツールボタンを配置
+            self.toolbar.addWidget(self.tool_buttons[-1])
 
         # コンボボックス
         self.comboBox = QComboBox(self.centralwidget)
@@ -111,8 +111,17 @@ class MWindow(QMainWindow):
 
     def show_about_dialog(self):
         dialog = AboutDialog(self)
-        # dialog.exec()
-        dialog.show()
+        dialog.exec()
+
+    def show_import_file_dialog(self):
+        dialog = ImportFileDialog(self)
+        selected_files = dialog.get_selected_file()
+        print(selected_files)
+
+        for fname in selected_files:
+            print(fname)
+            ret = get_title_from_filename(fname)
+            print(ret)
 
     def show_message(self, message):
         # メッセージボックスでメッセージを表示
