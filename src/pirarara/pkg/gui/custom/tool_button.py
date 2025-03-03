@@ -9,7 +9,8 @@ from PySide6.QtWidgets import QMenu, QToolButton
 
 
 class PirararaToolButton(QToolButton):
-    """カスタムツールボタン。
+    """
+    カスタムツールボタン。
 
     テキスト、アイコン、およびサブメニューのオプションを指定できます。
 

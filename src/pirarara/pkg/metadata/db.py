@@ -367,3 +367,48 @@ class MetaDataDB:
             data = cursor.fetchone()
 
         return data is not None
+
+    def get_count(self, total_text: str, column: str) -> list | None:
+        """
+        指定されたcolumnに基づいてテーブルからデータ数を取得するメソッド。
+
+        Args:
+            column (str): データ数を集計するカラム名。
+
+        Returns:
+            list | None: 取得したデータを格納したリスト。データが存在しない場合はNone。
+
+        取得したデータは初めはレコード全体の数。
+        2つ目の要素以降にソートされたデータの個数が並ぶ。
+        データはすべて文字列型となる。
+        """
+        # 各要素の個数を取得
+        sql = (
+            f"SELECT {column}, COUNT(*) FROM {self.table_name} "
+            + "WHERE (deletion_mark IS NULL OR deletion_mark != 1) AND "
+            + f"{column} IS NOT NULL AND {column}!='' "
+            + f"GROUP BY {column} "
+            + f"ORDER BY {column} ASC;"
+        )
+
+        data = []
+        with sqlite3.connect(self.db_file_path, isolation_level=None) as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            data = cursor.fetchall()
+
+        total_count = 0
+        ret_data: list[tuple[str, int]] = []
+        if data is not None:
+            for items in data:
+                if (
+                    isinstance(items, tuple)
+                    and len(items) == 2
+                    and isinstance(items[0], str)
+                    and isinstance(items[1], int)
+                ):
+                    ret_data.append((items[0], items[1]))
+                    total_count += items[1]
+
+        ret_data.insert(0, (total_text, total_count))
+        return ret_data

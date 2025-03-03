@@ -3,7 +3,11 @@
 import os
 
 from pkg.const import __appname__, __version__
-from pkg.gui.custom import PirararaToolButton,PirararaTableWidget
+from pkg.gui.custom import (
+    PirararaTableWidget,
+    PirararaToolButton,
+    PirararaTreeWidget,
+)
 from pkg.gui.dialogs import AboutDialog, ImportFileDialog
 from pkg.metadata import set_media_info
 from PySide6.QtCore import QRect, QSize, Qt
@@ -77,7 +81,7 @@ class MWindow(QMainWindow):
         self.splitter_1.setOrientation(Qt.Orientation.Horizontal)
 
         # ツリーウィジェット
-        self.treeWidget = QTreeWidget(self.splitter_1)
+        self.treeWidget = PirararaTreeWidget(self.splitter_1)
         self.splitter_1.addWidget(self.treeWidget)
 
         # テーブルウィジェット

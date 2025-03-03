@@ -4,7 +4,8 @@ from PySide6.QtGui import QFont
 
 
 def qfont_to_stylesheet(font: QFont) -> str:
-    """QFontオブジェクトをスタイルシート形式に変換します。
+    """
+    QFontオブジェクトをスタイルシート形式に変換します。
 
     Args:
         font (QFont): QFontオブジェクト。
