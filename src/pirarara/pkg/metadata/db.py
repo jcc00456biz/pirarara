@@ -143,6 +143,15 @@ class MetaDataDB:
 
         gc.collect()
 
+    def get_table_columns(self) -> dict:
+        """
+        データベースのテーブルカラム情報を返します。
+
+        Returns:
+            dict: カラム定義情報
+        """
+        return self.table_columns
+
     def insert(self, columns: list, values: list) -> int | None:
         """
         指定されたカラムと値を使用してデータベースに新しいレコードを挿入します。
@@ -329,13 +338,13 @@ class MetaDataDB:
 
         ret_data = []
         for d in data:
-            roe_data = {}
+            dict_data = {}
             for index, col in enumerate(table_columns):
                 if isinstance(d[index], str):
-                    roe_data[col[1]] = d[index]
+                    dict_data[col[1]] = d[index]
                 if isinstance(d[index], int):
-                    roe_data[col[1]] = str(d[index])
-            ret_data.append(roe_data)
+                    dict_data[col[1]] = str(d[index])
+            ret_data.append(dict_data)
         return ret_data
 
     def exists(self, column: str, check_data: str) -> bool:
