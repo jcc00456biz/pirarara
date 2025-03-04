@@ -122,3 +122,11 @@ INFO:pkg.gui.custom.tree_widget:category クラゲ
 INFO:pkg.gui.custom.tree_widget:on_item_double_clicked: 0
 INFO:pkg.gui.custom.tree_widget:category クラゲ
 INFO:pkg.gui.custom.tree_widget:on_item_double_clicked: 0
+INFO:pkg.gui.custom.combo_box:New item sample2
+INFO:pkg.gui.custom.combo_box:add new item 
+INFO:pkg.gui.custom.combo_box:New item 
+INFO:pkg.gui.custom.combo_box:New item sample2
+INFO:pkg.gui.custom.combo_box:New item sample2
+INFO:pkg.gui.custom.combo_box:New item sample
+INFO:pkg.gui.custom.combo_box:New item sample
+INFO:pkg.gui.custom.combo_box:New item sample2

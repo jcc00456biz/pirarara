@@ -4,6 +4,7 @@ import os
 
 from pkg.const import __appname__, __version__
 from pkg.gui.custom import (
+    PirararaComboBox,
     PirararaTableWidget,
     PirararaToolButton,
     PirararaTreeWidget,
@@ -73,7 +74,7 @@ class MWindow(QMainWindow):
             self.toolbar.addWidget(self.tool_buttons[-1])
 
         # コンボボックス
-        self.comboBox = QComboBox(self.centralwidget)
+        self.comboBox = PirararaComboBox(self.centralwidget)
         self.verticalLayout.addWidget(self.comboBox)
 
         # スプリッター
@@ -113,6 +114,9 @@ class MWindow(QMainWindow):
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar)
 
+        # コンボボックスのシグナルにスロットを割り当て
+        self.comboBox.item_edited.connect(self.on_combo_box_editing)
+
         # ツリーウィジェットのシグナルにスロットを割り当て
         self.treeWidget.item_selected.connect(
             self.on_tree_widget_item_selected
@@ -131,6 +135,12 @@ class MWindow(QMainWindow):
             print(fname)
             ret = set_media_info(fname)
             print(ret)
+
+    def on_combo_box_editing(self, text: str):
+        if len(text) == 0:
+            self.tableWidget.get_form_db("", "")
+        else:
+            self.tableWidget.get_form_db("title", text)
 
     def on_tree_widget_item_selected(self, column_text, parent_text):
         # 選択したもので表示
