@@ -113,6 +113,11 @@ class MWindow(QMainWindow):
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar)
 
+        # ツリーウィジェットのシグナルにスロットを割り当て
+        self.treeWidget.item_selected.connect(
+            self.on_tree_widget_item_selected
+        )
+
     def show_about_dialog(self):
         dialog = AboutDialog(self)
         dialog.exec()
@@ -126,6 +131,10 @@ class MWindow(QMainWindow):
             print(fname)
             ret = set_media_info(fname)
             print(ret)
+
+    def on_tree_widget_item_selected(self, column_text, parent_text):
+        # 選択したもので表示
+        self.tableWidget.get_form_db(parent_text, column_text)
 
     def show_message(self, message):
         # メッセージボックスでメッセージを表示

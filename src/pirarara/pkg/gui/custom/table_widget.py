@@ -109,7 +109,9 @@ class PirararaTableWidget(QTableWidget):
         # DB上の値を更新
         self.db.update(db_id, db_column, db_value)
 
-    def get_form_db(self):
+    def get_form_db(
+        self, column: str | None = None, keyword: str | None = None
+    ):
         self.blockSignals(True)
 
         # 表示内容をクリア
@@ -117,7 +119,12 @@ class PirararaTableWidget(QTableWidget):
         self.setRowCount(0)
 
         # データべーースからデータを取得
-        data = self.db.get_all_data()
+        if not column or not keyword:
+            data = self.db.get_all_data()
+        elif isinstance(column, str) and isinstance(keyword, str):
+            data = self.db.get_all_data_by_column(column, keyword)
+        else:
+            data = self.db.get_all_data()
 
         # データベース取得したデータを表示
         for row_index, d_item in enumerate(data):

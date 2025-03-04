@@ -412,3 +412,40 @@ class MetaDataDB:
 
         ret_data.insert(0, (total_text, total_count))
         return ret_data
+
+    def get_all_data_by_column(self, column: str, text: str) -> list | None:
+        if not isinstance(column, str):
+            raise TypeError("column must be of type str")
+        if len(column) == 0:
+            return None
+        if not isinstance(text, str):
+            raise TypeError("text must be of type str")
+        if len(text) == 0:
+            return None
+
+        pattern = f"*{text}*"
+
+        with sqlite3.connect(self.db_file_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"PRAGMA TABLE_INFO ({self.table_name});")
+            table_columns = cursor.fetchall()
+            cursor.execute(
+                f"SELECT * FROM {self.table_name} "
+                + f"WHERE {column} GLOB ? ORDER BY id ASC;",
+                (f"{pattern}",),
+            )
+            data = cursor.fetchall()
+
+        if data is None:
+            return None
+
+        ret_data = []
+        for d in data:
+            dict_data = {}
+            for index, col in enumerate(table_columns):
+                if isinstance(d[index], str):
+                    dict_data[col[1]] = d[index]
+                if isinstance(d[index], int):
+                    dict_data[col[1]] = str(d[index])
+            ret_data.append(dict_data)
+        return ret_data

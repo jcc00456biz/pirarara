@@ -4,13 +4,16 @@ import logging
 import os
 
 from pkg.metadata import MetaDataDB
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QHeaderView, QTreeWidget, QTreeWidgetItem
 
 logger = logging.getLogger(__name__)
 
 
 class PirararaTreeWidget(QTreeWidget):
+
+    # 独自シグナル
+    item_selected = Signal(str, str)
 
     INIT_ADJUST_DISPLAY_CHARS = 4
     INIT_ADJUST_DISPLAY_DIGITS = 4
@@ -45,11 +48,12 @@ class PirararaTreeWidget(QTreeWidget):
         # カラム設定
         self._setup()
 
-        # スロットを接続
-        # self.itemSelectionChanged.connect(self.on_item_selection_changed)
-
         # 全アイテム展開
         self.expandAll()
+
+        # スロットを接続
+        self.itemSelectionChanged.connect(self.on_item_selection_changed)
+        self.itemDoubleClicked.connect(self.on_item_double_clicked)
 
     def _setup(self):
         # テーブルヘッダ構築
@@ -130,3 +134,26 @@ class PirararaTreeWidget(QTreeWidget):
     def resize_me(self):
         self.resizeColumnToContents(0)
         self.resizeColumnToContents(1)
+
+    def on_item_selection_changed(self):
+        """
+        アイテムが選択されたときに呼び出されるメソッド。
+        選択されたアイテムのテキストと親アイテムのテキストを取得し、独自シグナルを送信します。
+        """
+        selected_items = self.selectedItems()
+        if selected_items:
+            # 選択されたカラムとテキスト取得
+            selected_item = selected_items[0]
+            column_text = selected_item.text(0)
+            # 選択されたカラムは親アイテムかを判断
+            parent_item = selected_item.parent()
+            signal_parent_text = parent_item.text(0)
+            # 独自シグナルを発信
+            logger.info(f"{signal_parent_text} {column_text}")
+            self.item_selected.emit(column_text, signal_parent_text)
+
+    def on_item_double_clicked(self, item, column):
+        item.setSelected(False)
+        # 独自シグナルを発信
+        logger.info(f"on_item_double_clicked: {column}")
+        self.item_selected.emit("", "")
