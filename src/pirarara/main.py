@@ -5,6 +5,7 @@ import os
 import sys
 
 from my_log import my_logging_setup
+from pkg.config import AppConfig
 from pkg.gui import app_run
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,8 @@ def get_exec_path() -> str:
 
 
 def main() -> int:
+    # 先にアプリ構成ファイル制御クラスを生成
+    _ = AppConfig()
 
     # カレントディレクトリでログファイル作成
     current_path = os.getcwd()

@@ -3,6 +3,7 @@
 import os
 
 from pkg.const import __appname__, __version__
+from pkg.config import AppConfig
 from pkg.gui.custom import (
     PirararaComboBox,
     PirararaTableWidget,
@@ -12,9 +13,8 @@ from pkg.gui.custom import (
 from pkg.gui.dialogs import AboutDialog, ImportFileDialog
 from pkg.metadata import set_media_info
 from PySide6.QtCore import QRect, QSize, Qt
-from PySide6.QtGui import QAction
+# from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
-    QComboBox,
     QGraphicsView,
     QMainWindow,
     QMenuBar,
@@ -22,9 +22,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QSplitter,
     QStatusBar,
-    QTableWidget,
     QToolBar,
-    QTreeWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -33,6 +31,9 @@ from PySide6.QtWidgets import (
 class MWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        # アプリケーション構成ファイルアクセスクラス
+        self.app_config = AppConfig()
 
         # 画面タイトルの設定
         self.setWindowTitle(f"{__appname__} {__version__}")
@@ -114,6 +115,9 @@ class MWindow(QMainWindow):
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar)
 
+        # ウインドウ位置、サイズなどを設定
+        self._setup()
+
         # コンボボックスのシグナルにスロットを割り当て
         self.comboBox.item_edited.connect(self.on_combo_box_editing)
 
@@ -121,6 +125,52 @@ class MWindow(QMainWindow):
         self.treeWidget.item_selected.connect(
             self.on_tree_widget_item_selected
         )
+
+    def _setup(self):
+        """
+        アプリケーション構成ファイルがデフォルト値であれば
+        フォントサイズ以外は設定されていないので設定して保存
+        """
+        if self.app_config.isdefault:
+            self.app_config.config["APP_GUI"]["main_window"] = (
+                self.app_config.q_bytearray_to_str(self.saveGeometry())
+            )
+            self.app_config.config["APP_GUI"]["splitter1"] = (
+                self.app_config.q_bytearray_to_str(self.splitter_1.saveState())
+            )
+            self.app_config.config["APP_GUI"]["splitter2"] = (
+                self.app_config.q_bytearray_to_str(self.splitter_2.saveState())
+            )
+            self.app_config.write_config()
+        else:
+            self.restoreGeometry(
+                self.app_config.str_to_q_bytearray(
+                    self.app_config.config["APP_GUI"]["main_window"]
+                )
+            )
+            self.splitter_1.restoreState(
+                self.app_config.str_to_q_bytearray(
+                    self.app_config.config["APP_GUI"]["splitter1"]
+                )
+            )
+            self.splitter_2.restoreState(
+                self.app_config.str_to_q_bytearray(
+                    self.app_config.config["APP_GUI"]["splitter2"]
+                )
+            )
+
+    def closeEvent(self, event):
+        self.app_config.config["APP_GUI"]["main_window"] = (
+            self.app_config.q_bytearray_to_str(self.saveGeometry())
+        )
+        self.app_config.config["APP_GUI"]["splitter1"] = (
+            self.app_config.q_bytearray_to_str(self.splitter_1.saveState())
+        )
+        self.app_config.config["APP_GUI"]["splitter2"] = (
+            self.app_config.q_bytearray_to_str(self.splitter_2.saveState())
+        )
+        self.app_config.write_config()
+        super().closeEvent(event)
 
     def show_about_dialog(self):
         dialog = AboutDialog(self)
