@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 import os
 import subprocess
 
 import ffmpeg
+
+logger = logging.getLogger(__name__)
 
 
 def is_ffmpeg_installed():
@@ -139,3 +142,17 @@ def get_media_info(file_path: str, file_hash_data: str) -> dict:
         pass
 
     return info
+
+
+def capture_frame(file_path, output_image_path, time="00:00:01") -> bool:
+    try:
+        (
+            ffmpeg
+            .input(file_path, ss=time)
+            .output(output_image_path, vframes=1)
+            .run()
+        )
+        return True
+    except ffmpeg.Error as e:
+        logger.error(f"Error capturing frame: {e}")
+        return False

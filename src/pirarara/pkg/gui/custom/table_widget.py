@@ -5,13 +5,17 @@ import os
 from datetime import datetime
 
 from pkg.metadata import MetaDataDB
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem
 
 logger = logging.getLogger(__name__)
 
 
 class PirararaTableWidget(QTableWidget):
+
+    # 独自シグナル
+    item_selected = Signal(int)
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -72,7 +76,9 @@ class PirararaTableWidget(QTableWidget):
         self._setup()
         self.get_form_db()
         # 変更時のシグナルにスロット割当
-        self.cellChanged.connect(self._on_changed)
+        self.cellChanged.connect(self.on_changed)
+        # 選択が変わった時のシグナルにスロット割当
+        self.itemSelectionChanged.connect(self.on_selection_changed)
 
     def _setup(self):
         # カラム数設定
@@ -93,7 +99,7 @@ class PirararaTableWidget(QTableWidget):
             + "background-color: #333; color: white;}"
         )
 
-    def _on_changed(self, row: int, column: int):
+    def on_changed(self, row: int, column: int):
         # 更新するDB上のカラム名を特定
         db_column = [self.columns_keys[column]]
         # 更新するデータを取得
@@ -108,6 +114,13 @@ class PirararaTableWidget(QTableWidget):
         db_id = int(item.text())
         # DB上の値を更新
         self.db.update(db_id, db_column, db_value)
+
+    def on_selection_changed(self):
+        selected_items = self.selectedItems()
+        for item in selected_items:
+            db_id = int(item.text())
+            break
+        self.item_selected.emit(db_id)
 
     def get_form_db(
         self, column: str | None = None, keyword: str | None = None
@@ -155,7 +168,9 @@ class PirararaTableWidget(QTableWidget):
 
                 cell_data = QTableWidgetItem(value)
                 if not edit:
-                    cell_data.setFlags(cell_data.flags() & ~Qt.ItemIsEditable)
+                    cell_data.setFlags(
+                        cell_data.flags() & ~Qt.ItemFlag.ItemIsEditable
+                    )
                 self.setItem(row_index, column_index, cell_data)
         self.resizeColumnsToContents()
         self.blockSignals(False)

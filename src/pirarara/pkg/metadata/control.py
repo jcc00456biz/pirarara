@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 import os
+import shutil
 
 from .db import MetaDataDB
 from .hash import get_file_hash
-from .media_info import get_media_info, get_media_type, is_ffmpeg_installed
+from .media_info import (
+    capture_frame,
+    get_media_info,
+    get_media_type,
+    is_ffmpeg_installed,
+)
+
+logger = logging.getLogger(__name__)
 
 
 def set_media_info(file_path: str) -> int:
@@ -36,4 +45,42 @@ def set_media_info(file_path: str) -> int:
     ret_id = db.insert(columns, values)
     if ret_id is None:
         return 0
+
+    # 保存先ディレクトリ作成
+    save_dir = os.path.dirname(db_file_path)
+    save_path = os.path.join(save_dir, f"id{ret_id}")
+    os.makedirs(save_path, exist_ok=True)
+
+    # 動画から静止画をキャプチャ
+    capture_file_path = os.path.join(save_path, "capture.jpg")
+    if capture_frame(file_path, capture_file_path):
+        copy_file_to_directory(file_path, save_path)
+
+    # インポートした先のフォルダ、ファイル名をDBに登録
+    update_columns = [
+        "save_dir_path",
+        "file_name",
+    ]
+    update_values = [save_path, os.path.basename(file_path)]
+    db.update(ret_id, update_columns, update_values)
+
     return ret_id
+
+
+def copy_file_to_directory(src_file_path, dest_directory) -> bool:
+    try:
+        # 目的ディレクトリが存在しない場合は作成
+        if not os.path.exists(dest_directory):
+            os.makedirs(dest_directory, exist_ok=True)
+
+        # 目的ディレクトリのパスにファイル名を追加
+        dest_file_path = os.path.join(
+            dest_directory, os.path.basename(src_file_path)
+        )
+
+        # ファイルをコピー
+        shutil.copy(src_file_path, dest_file_path)
+        return True
+    except Exception as e:
+        logger.error(f"Error copy file: {e}")
+        return False

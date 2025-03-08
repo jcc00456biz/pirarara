@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 import os
 
-from pkg.const import __appname__, __version__
 from pkg.config import AppConfig
+from pkg.const import __appname__, __version__
 from pkg.gui.custom import (
+    PirararaImageViewer,
     PirararaComboBox,
     PirararaTableWidget,
     PirararaToolButton,
@@ -13,6 +14,7 @@ from pkg.gui.custom import (
 from pkg.gui.dialogs import AboutDialog, ImportFileDialog
 from pkg.metadata import set_media_info
 from PySide6.QtCore import QRect, QSize, Qt
+
 # from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QGraphicsView,
@@ -95,7 +97,7 @@ class MWindow(QMainWindow):
         self.splitter_2.setOrientation(Qt.Orientation.Vertical)
 
         # グラフィックスビュー
-        self.graphicsView = QGraphicsView(self.splitter_2)
+        self.graphicsView = PirararaImageViewer(self.splitter_2)
         self.splitter_2.addWidget(self.graphicsView)
 
         # プレインテキストエディット
@@ -124,6 +126,11 @@ class MWindow(QMainWindow):
         # ツリーウィジェットのシグナルにスロットを割り当て
         self.treeWidget.item_selected.connect(
             self.on_tree_widget_item_selected
+        )
+
+        # テーブルウィジェットのシグナルにスロットを割り当て
+        self.tableWidget.item_selected.connect(
+            self.on_table_widget_item_selected
         )
 
     def _setup(self):
@@ -179,12 +186,12 @@ class MWindow(QMainWindow):
     def show_import_file_dialog(self):
         dialog = ImportFileDialog(self)
         selected_files = dialog.get_selected_file()
-        print(selected_files)
 
         for fname in selected_files:
-            print(fname)
-            ret = set_media_info(fname)
-            print(ret)
+            set_media_info(fname)
+
+        self.treeWidget.refresh_display()
+        self.tableWidget.get_form_db("", "")
 
     def on_combo_box_editing(self, text: str):
         if len(text) == 0:
@@ -192,10 +199,9 @@ class MWindow(QMainWindow):
         else:
             self.tableWidget.get_form_db("title", text)
 
-    def on_tree_widget_item_selected(self, column_text, parent_text):
+    def on_tree_widget_item_selected(self, column_text: str, parent_text: str):
         # 選択したもので表示
         self.tableWidget.get_form_db(parent_text, column_text)
 
-    def show_message(self, message):
-        # メッセージボックスでメッセージを表示
-        QMessageBox.information(self, "情報", message)
+    def on_table_widget_item_selected(self, db_id: int):
+        self.graphicsView.show_image(db_id)

@@ -157,3 +157,7 @@ class PirararaTreeWidget(QTreeWidget):
         # 独自シグナルを発信
         logger.info(f"on_item_double_clicked: {column}")
         self.item_selected.emit("", "")
+
+    def refresh_display(self):
+        self.clear()
+        self._setup()
