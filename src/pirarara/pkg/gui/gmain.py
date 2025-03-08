@@ -179,6 +179,22 @@ class MWindow(QMainWindow):
         self.app_config.write_config()
         super().closeEvent(event)
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Delete and self.tableWidget.hasFocus():
+            reply = QMessageBox.question(
+                self,
+                "message",
+                "Is it okay to delete this?",
+                QMessageBox.Yes | QMessageBox.No,
+            )
+            if reply == QMessageBox.No:
+                return
+            # 表の選択されているデータを削除
+            self.tableWidget.delete_selected_items()
+            # データ削除に伴い表示を更新
+            self.treeWidget.refresh_display()
+            self.tableWidget.get_form_db("", "")
+
     def show_about_dialog(self):
         dialog = AboutDialog(self)
         dialog.exec()

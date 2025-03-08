@@ -14,7 +14,7 @@ class ImportFileDialog(QFileDialog):
         self.setWindowTitle(f"{__appname__} {__version__}")
 
         # ファイル選択モードを設定します。
-        self.setFileMode(QFileDialog.FileMode.ExistingFile)
+        self.setFileMode(QFileDialog.FileMode.ExistingFiles)
 
         # カレントディレクトリを初期ディレクトリに設定します。
         self.setDirectory(os.getcwd())

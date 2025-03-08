@@ -8,5 +8,8 @@
 [Ll]ocal
 [Ss]cripts
 pyvenv.cfg
-.venv
+.venv/
 pip-selfcheck.json
+windows/build/
+windows/dist/
+.trash_box/

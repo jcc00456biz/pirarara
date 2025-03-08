@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+import shutil
 from datetime import datetime
 
 from pkg.metadata import MetaDataDB
@@ -174,3 +175,57 @@ class PirararaTableWidget(QTableWidget):
                 self.setItem(row_index, column_index, cell_data)
         self.resizeColumnsToContents()
         self.blockSignals(False)
+
+    def delete_selected_items(self):
+        selected_items = self.selectedItems()
+        id_column_to_check = 0
+
+        for item in selected_items:
+            if item.column() == id_column_to_check:
+                db_id = int(item.text())
+                self.force_delete_db(db_id)
+
+    def force_delete_db(self, id: int):
+        # 対象のデータを取得
+        tgt_data = self.db.get_data(id)
+        if tgt_data is None:
+            return
+        src_folder = tgt_data.get("save_dir_path", "")
+        if len(src_folder) == 0:
+            return
+
+        files = os.listdir(src_folder)
+        if len(files) != 0:
+            trash_box_basename = os.path.join(
+                os.path.dirname(self.db.db_file_path), ".trash_box"
+            )
+            trash_box = self.create_timestamped_folder(trash_box_basename)
+        try:
+            for file in files:
+                src_file = os.path.join(src_folder, file)
+                base_dir = os.path.basename(src_folder)
+                base_dir_sub = os.path.join(trash_box, base_dir)
+                if not os.path.exists(base_dir_sub):
+                    os.makedirs(base_dir_sub, exist_ok=True)
+                dest_file = os.path.join(base_dir_sub, file)
+                shutil.move(src_file, dest_file)
+            shutil.rmtree(src_folder)
+        except FileNotFoundError:
+            raise FileNotFoundError
+        except Exception:
+            raise Exception
+        # DB内のデータ削除
+        self.db.delete(id)
+
+    def create_timestamped_folder(self, base_path: str):
+        # 現在の年月日時分秒を取得
+        now = datetime.now()
+        folder_name = now.strftime("%Y%m%d_%H%M%S")
+
+        # フォルダのフルパスを作成
+        full_path = os.path.join(base_path, folder_name)
+
+        # フォルダを作成
+        os.makedirs(full_path, exist_ok=True)
+
+        return full_path
