@@ -18,6 +18,19 @@ logger = logging.getLogger(__name__)
 
 
 def set_media_info(file_path: str) -> int:
+    """
+    メディアファイルの情報を取得し、データベースに保存する。
+
+    動画ファイルのハッシュ情報を取得し、データベースに登録します。
+    新規のファイルに対して、保存ディレクトリを作成し、静止画をキャプチャする処理を行います。
+
+    Args:
+        file_path (str): メディアファイルのパス。
+
+    Returns:
+        int: データベースに保存された新規レコードのID。
+             ファイルが無効、もしくは既存の場合は0を返します。
+    """
     # 動画以外は処理しなし
     if get_media_type(file_path) != "movie":
         return 0
@@ -70,6 +83,18 @@ def set_media_info(file_path: str) -> int:
 
 
 def copy_file_to_directory(src_file_path, dest_directory) -> bool:
+    """
+    ファイルを指定されたディレクトリにコピーする。
+
+    コピー先のディレクトリが存在しない場合は作成し、指定されたファイルをコピーします。
+
+    Args:
+        src_file_path (str): コピー元ファイルのパス。
+        dest_directory (str): コピー先ディレクトリのパス。
+
+    Returns:
+        bool: コピーが成功した場合はTrue。エラーが発生した場合はFalse。
+    """
     try:
         # 目的ディレクトリが存在しない場合は作成
         if not os.path.exists(dest_directory):

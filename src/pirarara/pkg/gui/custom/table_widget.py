@@ -14,11 +14,24 @@ logger = logging.getLogger(__name__)
 
 
 class PirararaTableWidget(QTableWidget):
+    """
+    カスタムテーブルウィジェットクラス。
 
-    # 独自シグナル
+    データベースの情報を表示・編集し、選択や変更時に独自シグナルを発信します。
+    """
+
+    # アイテムが選択された際に発信されるシグナル。選択された項目のデータベースIDを渡します。
     item_selected = Signal(int)
 
     def __init__(self, parent=None):
+        """
+        コンストラクタ。
+
+        テーブルウィジェットを初期化し、データベース接続やカラム情報を設定します。
+
+        Args:
+            parent (QObject, optional): 親ウィジェット。デフォルトはNone。
+        """
         super().__init__(parent)
 
         # 構成情報からDBファイル名取得
@@ -27,14 +40,7 @@ class PirararaTableWidget(QTableWidget):
         # DBクラスを生成
         self.db = MetaDataDB(db_file_path)
 
-        """
-        データベースのカラム情報を取得を取得してテーブルウィジェットでのカラムヘッダー定義を作る
-        作成するのは辞書型で値は
-        テーブルウィジェットのヘッダーに表示するテキスト。
-        テーブルウィジェットに表示する際の書式。
-        テーブルウィジェットで変更の可否の定義。
-        をもつタプル。
-        """
+        # テーブルウィジェットのカラム定義を設定
         db_table_columns = self.db.get_table_columns()
         self.table_widget_columns = {}
         exclude_keys = {
@@ -73,28 +79,28 @@ class PirararaTableWidget(QTableWidget):
                 edit = True
             self.table_widget_columns[key] = (fmt, edit)
 
-        # キーだけのリスト
+        # キーのリストを設定
         self.columns_keys = list(self.table_widget_columns.keys())
-        # 表示内容のセットアップ
+        # テーブルの初期セットアップ
         self._setup()
+        # データベースからデータを取得して設定
         self.get_form_db()
-        # 変更時のシグナルにスロット割当
+        # シグナルとスロットを接続
         self.cellChanged.connect(self.on_changed)
-        # 選択が変わった時のシグナルにスロット割当
         self.itemSelectionChanged.connect(self.on_selection_changed)
 
     def _setup(self):
-        # カラム数設定
+        """
+        テーブルウィジェットの初期スタイルと設定を適用します。
+
+        Returns:
+            None
+        """
         self.setColumnCount(len(self.columns_keys))
-        # カラムヘッダ設定
         self.setHorizontalHeaderLabels(self.columns_keys)
-        # 行、カラムサイズをコンテンツに応じてリサイズ
         self.resizeColumnsToContents()
-        # 行選択モード
         self.setSelectionBehavior(QTableWidget.SelectRows)
-        # ソートを有効に
         self.setSortingEnabled(True)
-        # スタイルシート設定
         self.setStyleSheet(
             "QTableWidget { font-size: 14pt; font-weight: bold;}"
             + "QTableWidget::item:selected { background-color: #3399ff; }"
@@ -103,22 +109,38 @@ class PirararaTableWidget(QTableWidget):
         )
 
     def on_changed(self, row: int, column: int):
-        # 更新するDB上のカラム名を特定
+        """
+        セルが変更されたときに呼び出されるスロット。
+
+        データベースの該当する値を更新します。
+
+        Args:
+            row (int): 変更されたセルの行番号。
+            column (int): 変更されたセルの列番号。
+
+        Returns:
+            None
+        """
         db_column = [self.columns_keys[column]]
-        # 更新するデータを取得
         item = self.item(row, column)
         if item is None:
             return
         db_value = [item.text()]
-        # id
         item = self.item(row, 0)
         if item is None:
             return
         db_id = int(item.text())
-        # DB上の値を更新
         self.db.update(db_id, db_column, db_value)
 
     def on_selection_changed(self):
+        """
+        アイテムが選択されたときに呼び出されるスロット。
+
+        選択されたアイテムのデータベースIDを独自シグナル `item_selected` として発信します。
+
+        Returns:
+            None
+        """
         selected_items = self.selectedItems()
         for item in selected_items:
             db_id = int(item.text())
@@ -129,13 +151,20 @@ class PirararaTableWidget(QTableWidget):
     def get_form_db(
         self, column: str | None = None, keyword: str | None = None
     ):
-        self.blockSignals(True)
+        """
+        データベースからデータを取得してテーブルに表示します。
 
-        # 表示内容をクリア
+        Args:
+            column (str | None, optional): 検索対象のカラム名。デフォルトはNone。
+            keyword (str | None, optional): 検索キーワード。デフォルトはNone。
+
+        Returns:
+            None
+        """
+        self.blockSignals(True)
         self.clearContents()
         self.setRowCount(0)
 
-        # データべーースからデータを取得
         if not column or not keyword:
             data = self.db.get_all_data()
         elif isinstance(column, str) and isinstance(keyword, str):
@@ -143,20 +172,16 @@ class PirararaTableWidget(QTableWidget):
         else:
             data = self.db.get_all_data()
 
-        # データベース取得したデータを表示
         for row_index, d_item in enumerate(data):
-            # 削除されたデータ？
             deletion_mark = d_item.get("deletion_mark", "0")
             if deletion_mark == "1":
                 continue
-            # 表示するデータ
             self.setRowCount(row_index + 1)
             for column_index, (column, items) in enumerate(
                 self.table_widget_columns.items()
             ):
                 fmt, edit = items
                 item_value = d_item.get(column, "")
-
                 if item_value:
                     try:
                         if fmt == "%Y-%m-%d":
@@ -169,7 +194,6 @@ class PirararaTableWidget(QTableWidget):
                         value = str(item_value)
                 else:
                     value = ""
-
                 cell_data = QTableWidgetItem(value)
                 if not edit:
                     cell_data.setFlags(
@@ -180,23 +204,35 @@ class PirararaTableWidget(QTableWidget):
         self.blockSignals(False)
 
     def delete_selected_items(self):
+        """
+        選択されたアイテムをデータベースから削除します。
+
+        Returns:
+            None
+        """
         selected_items = self.selectedItems()
         id_column_to_check = 0
-
         for item in selected_items:
             if item.column() == id_column_to_check:
                 db_id = int(item.text())
                 self.force_delete_db(db_id)
 
     def force_delete_db(self, id: int):
-        # 対象のデータを取得
+        """
+        指定したIDのデータを強制的に削除します。
+
+        Args:
+            id (int): 削除対象のデータベースID。
+
+        Returns:
+            None
+        """
         tgt_data = self.db.get_data(id)
         if tgt_data is None:
             return
         src_folder = tgt_data.get("save_dir_path", "")
         if len(src_folder) == 0:
             return
-
         files = os.listdir(src_folder)
         if len(files) != 0:
             trash_box_basename = os.path.join(
@@ -217,18 +253,20 @@ class PirararaTableWidget(QTableWidget):
             raise FileNotFoundError
         except Exception:
             raise Exception
-        # DB内のデータ削除
         self.db.delete(id)
 
-    def create_timestamped_folder(self, base_path: str):
-        # 現在の年月日時分秒を取得
+    def create_timestamped_folder(self, base_path: str) -> str:
+        """
+        タイムスタンプ付きのフォルダを作成します。
+
+        Args:
+            base_path (str): ベースとなるフォルダのパス。
+
+        Returns:
+            str: 作成されたフォルダのフルパス。
+        """
         now = datetime.now()
         folder_name = now.strftime("%Y%m%d_%H%M%S")
-
-        # フォルダのフルパスを作成
         full_path = os.path.join(base_path, folder_name)
-
-        # フォルダを作成
         os.makedirs(full_path, exist_ok=True)
-
         return full_path

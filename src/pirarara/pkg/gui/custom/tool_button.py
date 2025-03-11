@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 import os
 
 from pkg.gui.PySideHelper import qfont_to_stylesheet
@@ -7,18 +8,14 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import QMenu, QToolButton
 
+logger = logging.getLogger(__name__)
+
 
 class PirararaToolButton(QToolButton):
     """
-    カスタムツールボタン。
+    カスタムツールボタンクラス。
 
-    テキスト、アイコン、およびサブメニューのオプションを指定できます。
-
-    Args:
-        text (str | None): ボタンに表示するテキスト。
-        icon (str | QIcon | None): アイコン画像のファイルパスまたはQIconオブジェクト。
-        action_list (list[QAction] | None): サブメニューのアクションリスト。
-        parent (QWidget | None): 親ウィジェット。
+    テキスト、アイコン、サブメニューを設定可能なツールボタンを作成します。
     """
 
     def __init__(
@@ -28,6 +25,24 @@ class PirararaToolButton(QToolButton):
         action_list: list[QAction] | None = None,
         parent=None,
     ):
+        """
+        コンストラクタ。
+
+        ツールボタンを初期化し、テキスト、アイコン、サブメニューを設定します。
+
+        Args:
+            text (str | None, optional): ボタンに表示するテキスト。デフォルトはNone。
+            icon (str | QIcon | None, optional): ボタンに表示するアイコン。
+            文字列（パス）またはQIconインスタンスを指定可能。デフォルトはNone。
+            action_list (list[QAction] | None, optional): サブメニューに追加する
+            QActionのリスト。デフォルトはNone。
+            parent (QObject, optional): 親ウィジェット。デフォルトはNone。
+
+        Raises:
+            FileNotFoundError: 指定されたアイコンファイルが存在しない場合に発生。
+            TypeError: `icon`引数が`str`または`QIcon`型以外の場合、または`action_list`内の
+            要素が全て`QAction`型でない場合に発生。
+        """
         super().__init__(parent)
 
         # テキストの設定
@@ -55,6 +70,7 @@ class PirararaToolButton(QToolButton):
                 raise TypeError(
                     "The icon argument must be of type str or QIcon"
                 )
+
         # サブメニューの設定
         if action_list:
             if not all(isinstance(a, QAction) for a in action_list):
@@ -64,6 +80,15 @@ class PirararaToolButton(QToolButton):
             self._create_menu(action_list)
 
     def _create_menu(self, action_list: list[QAction]):
+        """
+        サブメニューを作成し、ツールボタンに追加します。
+
+        Args:
+            action_list (list[QAction]): サブメニューに追加するQActionのリスト。
+
+        Returns:
+            None
+        """
         self._menu = QMenu(self)
         stylesheet = qfont_to_stylesheet(self.font())
         self._menu.setStyleSheet(stylesheet)

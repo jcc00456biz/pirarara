@@ -11,7 +11,7 @@ from pkg.gui import app_run
 
 logger = logging.getLogger(__name__)
 
-DEBUG = 1
+DEBUG = True
 
 
 def my_logging_setup(
@@ -20,16 +20,17 @@ def my_logging_setup(
     log_size: int | str,
     log_backup_count: int | str,
 ) -> None:
-    """ロギング設定を初期化する関数。
+    """
+    ログ設定を行います。ローテーティングファイルハンドラとストリームハンドラを使用してログを構成します。
 
     Args:
-        log_path (str): ログファイルを保存するディレクトリのパス。
-        log_file (str): ログファイルの名前。
-        log_size (int | str): ログファイルの最大サイズ（MB単位）。整数または文字列で指定。
-        log_backup_count (int | str): ログファイルのバックアップの数。整数または文字列で指定。
+        log_path (str): ログファイルを作成するディレクトリへのパス。
+        log_file (str): ログファイル名。
+        log_size (int | str): ログファイルの最大サイズ（MB単位）。
+        log_backup_count (int | str): 保存するバックアップログファイルの数。
 
     Returns:
-        None
+        None: この関数は戻り値を持ちません。
     """
     formatter = Formatter(
         "%(asctime)s : %(levelname)s : %(filename)s - %(message)s"
@@ -64,10 +65,10 @@ def my_logging_setup(
 
 def get_exec_path() -> str:
     """
-    PyInstallerで作成されたexeがあるフォルダを取得する関数。
+    スクリプトの実行パスを取得します。
 
     Returns:
-        str: exeが存在するフォルダのパス。
+        str: スクリプトが実行されているディレクトリのパス。
     """
     if DEBUG:
         exec_path = os.getcwd()
@@ -82,7 +83,13 @@ def get_exec_path() -> str:
 
 
 def main() -> int:
-    # 先にアプリ構成ファイル制御クラスを生成
+    """
+    アプリケーションのメインエントリーポイント。
+
+    Returns:
+        int: アプリケーションの終了ステータス。
+    """
+    # アプリケーション構成ファイル制御クラスを生成
     app_config = AppConfig()
 
     my_logging_setup(

@@ -30,6 +30,30 @@ def is_ffmpeg_installed():
 
 
 def get_media_type(file_path: str) -> str:
+    """
+    メディアファイルの種類を取得する。
+
+    指定されたファイルの拡張子に基づいて、そのメディアタイプを判別します。
+    動画、音楽、文章などのカテゴリに分類されます。
+
+    Args:
+        file_path (str): 判別対象のファイルのパス。
+
+    Returns:
+        str: メディアタイプを示す文字列。該当するタイプがない場合は空文字を返します。
+
+    Note:
+        対応する拡張子とメディアタイプの対応表は、`media_type_dict` に定義されています。
+        未対応の拡張子については、空文字が返されます。
+
+    Examples:
+        >>> get_media_type("example.mp4")
+        'movie'
+        >>> get_media_type("example.pdf")
+        'doc'
+        >>> get_media_type("unknown.xyz")
+        ''
+    """
     media_type_dict = {
         # 動画
         ".mp4": "movie",
@@ -145,6 +169,33 @@ def get_media_info(file_path: str, file_hash_data: str) -> dict:
 
 
 def capture_frame(file_path, output_image_path, time="00:00:01") -> bool:
+    """
+    動画ファイルの特定時刻のフレームをキャプチャして画像として保存する。
+
+    指定された動画ファイルから、指定時刻のフレームをキャプチャして
+    画像ファイルとして保存します。
+
+    Args:
+        file_path (str): 動画ファイルのパス。
+        output_image_path (str): 保存先の画像ファイルのパス。
+        time (str, optional): キャプチャするフレームの時刻（デフォルトは "00:00:01"）。
+
+    Returns:
+        bool: キャプチャが成功した場合はTrue、エラーが発生した場合はFalse。
+
+    Raises:
+        ffmpeg.Error: ffmpegによるエラーが発生した場合。
+
+    Examples:
+        >>> capture_frame("example.mp4", "output.jpg")
+        True
+        >>> capture_frame("invalid.mp4", "output.jpg")
+        False
+
+    Note:
+        この関数は、`ffmpeg` パッケージがインストールされている必要があります。
+        キャプチャが失敗した場合、エラーログが記録されます。
+    """
     try:
         (
             ffmpeg

@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 import os
 
 from pkg.config import AppConfig
 from pkg.const import __appname__, __version__
 from pkg.gui.custom import (
-    PirararaImageViewer,
     PirararaComboBox,
+    PirararaImageViewer,
     PirararaTableWidget,
     PirararaToolButton,
     PirararaTreeWidget,
@@ -17,7 +18,6 @@ from PySide6.QtCore import QRect, QSize, Qt
 
 # from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
-    QGraphicsView,
     QMainWindow,
     QMenuBar,
     QMessageBox,
@@ -29,9 +29,40 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class MWindow(QMainWindow):
+    """
+    メインウィンドウクラス。
+
+    このクラスは、PySideを使用してメインウィンドウを作成します。
+    ウィジェット、ツールバー、メニューバーなどの設定を行い、GUIの基本的な構造を構築します。
+
+    Attributes:
+        app_config (AppConfig): アプリケーション構成ファイルアクセスクラスのインスタンス。
+        centralwidget (QWidget): 中央ウィジェット。
+        verticalLayout (QVBoxLayout): 中央ウィジェット内の垂直レイアウト。
+        toolbar (QToolBar): ツールバー。
+        tool_button_define (tuple): ツールボタン定義。
+        tool_buttons (list): 作成されたツールボタンのリスト。
+        comboBox (PirararaComboBox): コンボボックス。
+        splitter_1 (QSplitter): 上部スプリッター。
+        splitter_2 (QSplitter): 下部スプリッター。
+        treeWidget (PirararaTreeWidget): ツリーウィジェット。
+        tableWidget (PirararaTableWidget): テーブルウィジェット。
+        graphicsView (PirararaImageViewer): グラフィックスビュー。
+        plainTextEdit (QPlainTextEdit): プレインテキストエディット。
+        menubar (QMenuBar): メニューバー。
+        statusbar (QStatusBar): ステータスバー。
+    """
     def __init__(self):
+        """
+        MWindowのコンストラクタ。
+
+        メインウィンドウの初期化を行い、ウィジェットやレイアウトの設定、
+        シグナルとスロットの接続などを行います。
+        """
         super().__init__()
 
         # アプリケーション構成ファイルアクセスクラス
@@ -135,8 +166,10 @@ class MWindow(QMainWindow):
 
     def _setup(self):
         """
-        アプリケーション構成ファイルがデフォルト値であれば
-        フォントサイズ以外は設定されていないので設定して保存
+        ウィンドウの状態やスプリッターの状態を保存または復元する。
+
+        アプリケーション構成ファイルがデフォルト値の場合は、
+        現在の状態を保存し、それ以外の場合は保存された状態を復元します。
         """
         if self.app_config.isdefault:
             self.app_config.config["APP_GUI"]["main_window"] = (
@@ -167,6 +200,15 @@ class MWindow(QMainWindow):
             )
 
     def closeEvent(self, event):
+        """
+        ウィンドウを閉じる際の処理を実行する。
+
+        ウィンドウやスプリッターの状態を構成ファイルに保存してから
+        クローズイベントを呼び出します。
+
+        Args:
+            event (QCloseEvent): クローズイベント。
+        """
         self.app_config.config["APP_GUI"]["main_window"] = (
             self.app_config.q_bytearray_to_str(self.saveGeometry())
         )
@@ -180,6 +222,15 @@ class MWindow(QMainWindow):
         super().closeEvent(event)
 
     def keyPressEvent(self, event):
+        """
+        キーボード入力時の処理を実行する。
+
+        Deleteキーが押された場合、フォーカスがテーブルウィジェットにあるときは
+        選択されたデータを削除します。
+
+        Args:
+            event (QKeyEvent): キープレスイベント。
+        """
         if event.key() == Qt.Key_Delete and self.tableWidget.hasFocus():
             reply = QMessageBox.question(
                 self,
@@ -197,10 +248,16 @@ class MWindow(QMainWindow):
             self.tableWidget.get_form_db("", "")
 
     def show_about_dialog(self):
+        """
+        「About」ダイアログを表示する。
+        """
         dialog = AboutDialog(self)
         dialog.exec()
 
     def show_import_file_dialog(self):
+        """
+        ファイルインポートダイアログを表示し、選択されたファイルを処理する。
+        """
         dialog = ImportFileDialog(self)
         selected_files = dialog.get_selected_file()
 
@@ -211,14 +268,32 @@ class MWindow(QMainWindow):
         self.tableWidget.get_form_db("", "")
 
     def on_combo_box_editing(self, text: str):
+        """
+        コンボボックスの編集時に処理を実行する。
+
+        Args:
+            text (str): コンボボックスに入力されたテキスト。
+        """
         if len(text) == 0:
             self.tableWidget.get_form_db("", "")
         else:
             self.tableWidget.get_form_db("title", text)
 
     def on_tree_widget_item_selected(self, column_text: str, parent_text: str):
-        # 選択したもので表示
+        """
+        ツリーウィジェットのアイテム選択時に処理を実行する。
+
+        Args:
+            column_text (str): 選択された列のテキスト。
+            parent_text (str): 親ノードのテキスト。
+        """
         self.tableWidget.get_form_db(parent_text, column_text)
 
     def on_table_widget_item_selected(self, db_id: int):
+        """
+        テーブルウィジェットのアイテム選択時に処理を実行する。
+
+        Args:
+            db_id (int): 選択されたデータベースID。
+        """
         self.graphicsView.show_image(db_id)

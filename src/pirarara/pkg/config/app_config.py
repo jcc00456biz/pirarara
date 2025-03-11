@@ -12,21 +12,38 @@ DEBUG = False
 
 
 class AppConfig:
+    """
+    アプリケーションの設定を管理するクラス。
+
+    このクラスはシングルトンパターンを用いて実装されています。
+    設定ファイルの読み書きや、アプリケーションの情報を提供します。
+    """
 
     _instance = None
 
     def __new__(cls, *args, **kwargs):
+        """
+        クラスの唯一のインスタンスを生成または取得します。
+
+        Returns:
+            AppConfig: クラスの唯一のインスタンス。
+        """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self):
+        """
+        AppConfigオブジェクトを初期化します。
+
+        設定ファイルが存在しない場合、新しい設定ファイルを作成します。
+        """
         if not hasattr(self, "_initialized"):
             self._initialized = True
         else:
             return
 
-        # 構成ファイルのパス
+        # 構成ファイルのパスを決定
         cfg_fname = f"{__appname__}.ini"
         if DEBUG:
             self.cfg_path = os.path.join(os.getcwd(), cfg_fname)
@@ -39,13 +56,11 @@ class AppConfig:
                 self.cfg_path = os.path.join(app_dir, cfg_fname)
             else:
                 raise RuntimeError(
-                    "An unverified operating system has been detected."
+                    "未確認のオペレーティングシステムが検出されました。"
                 )
 
-        # ConfigParserを生成
+        # ConfigParserの設定とデフォルト値の構成
         self.config = configparser.ConfigParser()
-
-        # アプリケーション情報（デフォルト値）
         cfg_dir = os.path.dirname(self.cfg_path)
 
         self.config["APP_INFO"] = {
@@ -61,7 +76,7 @@ class AppConfig:
             "splitter2": "",
         }
 
-        # 設定ファイルがない場合は新規で作成する
+        # 設定ファイルの存在確認と作成
         if not os.path.exists(self.cfg_path):
             dir_list = [
                 os.path.dirname(self.cfg_path),
@@ -77,38 +92,97 @@ class AppConfig:
             self.isdefault = False
 
     def write_config(self) -> None:
-        # 設定ファイルに書き込む
+        """
+        設定ファイルに現在の設定を保存します。
+
+        Returns:
+            None
+        """
         with open(
             self.cfg_path, "w", encoding="utf-8", newline="\n"
         ) as configfile:
             self.config.write(configfile)
 
     def read_config(self) -> None:
+        """
+        設定ファイルを読み込み、設定をロードします。
+
+        Returns:
+            None
+        """
         with open(
             self.cfg_path, "r", encoding="utf-8", newline="\n"
         ) as configfile:
             self.config.read_file(configfile)
 
     def q_bytearray_to_str(self, value: QByteArray) -> str:
+        """
+        QByteArrayを文字列に変換します。
+
+        Args:
+            value (QByteArray): 変換するQByteArray。
+
+        Returns:
+            str: 変換後の文字列。
+        """
         return str(value)
 
     def str_to_q_bytearray(self, value: str) -> QByteArray:
+        """
+        文字列をQByteArrayに変換します。
+
+        Args:
+            value (str): 変換する文字列。
+
+        Returns:
+            QByteArray: 変換後のQByteArray。
+        """
         try:
             return QByteArray(ast.literal_eval(value))
         except (ValueError, SyntaxError):
             return QByteArray(b"0")
 
-    def get_log_dir(self):
+    def get_log_dir(self) -> str:
+        """
+        ログディレクトリのパスを取得します。
+
+        Returns:
+            str: ログディレクトリのパス。
+        """
         return self.config["APP_INFO"]["log_dir"]
 
-    def get_log_file(self):
+    def get_log_file(self) -> str:
+        """
+        ログファイル名を取得します。
+
+        Returns:
+            str: ログファイル名。
+        """
         return self.config["APP_INFO"]["log"]
 
-    def get_db_dir(self):
+    def get_db_dir(self) -> str:
+        """
+        データベースディレクトリのパスを取得します。
+
+        Returns:
+            str: データベースディレクトリのパス。
+        """
         return self.config["APP_INFO"]["db_dir"]
 
-    def get_db_file(self):
+    def get_db_file(self) -> str:
+        """
+        データベースファイル名を取得します。
+
+        Returns:
+            str: データベースファイル名。
+        """
         return self.config["APP_INFO"]["db"]
 
-    def get_db_path(self):
+    def get_db_path(self) -> str:
+        """
+        データベースの完全なパスを取得します。
+
+        Returns:
+            str: データベースのパス。
+        """
         return os.path.join(self.get_db_dir(), self.get_db_file())

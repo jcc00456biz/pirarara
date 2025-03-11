@@ -9,13 +9,28 @@ logger = logging.getLogger(__name__)
 
 
 class PirararaComboBox(QComboBox):
-    # 独自シグナル
+    """
+    カスタムコンボボックスクラス。
+
+    履歴機能を備えた編集可能なコンボボックスで、新しい項目が追加されるたびに独自シグナルを発信します。
+    """
+
+    # 新しいアイテムが編集されたときに発信されるシグナル。編集されたテキストを渡します。
     item_edited = Signal(str)
 
-    # 記憶するヒストリー数
+    # 記憶する履歴の最大数。
     HISTORY_COUNT = 10
 
     def __init__(self, parent=None, history: int | None = None):
+        """
+        コンストラクタ。
+
+        コンボボックスを初期化し、スタイルの設定や編集終了イベントのハンドラを設定します。
+
+        Args:
+            parent (QObject, optional): 親ウィジェット。デフォルトはNone。
+            history (int | None, optional): 記憶する履歴数。指定がない場合はデフォルト値。
+        """
         super().__init__(parent)
 
         # 編集可能とする
@@ -30,7 +45,12 @@ class PirararaComboBox(QComboBox):
             self.line_edit.editingFinished.connect(self.on_editing_finished)
 
     def _setup(self):
-        # スタイルシート設定
+        """
+        コンボボックスのスタイルを設定します。
+
+        Returns:
+            None
+        """
         self.setStyleSheet(
             """
             QComboBox {
@@ -43,6 +63,15 @@ class PirararaComboBox(QComboBox):
         )
 
     def on_editing_finished(self):
+        """
+        編集が終了した際に呼び出されるイベントハンドラ。
+
+        新しいアイテムを履歴に追加し、必要に応じて古いアイテムを削除します。
+        また、独自シグナル `item_edited` を発信します。
+
+        Returns:
+            None
+        """
         new_text = self.currentText()
         if new_text not in [self.itemText(i) for i in range(self.count())]:
             if self.count() >= self.__class__.HISTORY_COUNT:
