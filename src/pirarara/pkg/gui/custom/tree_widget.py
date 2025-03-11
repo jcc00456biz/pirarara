@@ -3,6 +3,7 @@
 import logging
 import os
 
+from pkg.config import AppConfig
 from pkg.metadata import MetaDataDB
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QHeaderView, QTreeWidget, QTreeWidgetItem
@@ -28,8 +29,9 @@ class PirararaTreeWidget(QTreeWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        # DBファイル名
-        db_file_path = os.path.join(os.getcwd(), "metadata.db")
+        # 構成情報からDBファイル名取得
+        app_config = AppConfig()
+        db_file_path = app_config.get_db_path()
         # DBクラスを生成
         self.db = MetaDataDB(db_file_path)
 

@@ -3,6 +3,7 @@
 import logging
 import os
 
+from pkg.config import AppConfig
 from pkg.metadata import MetaDataDB
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
@@ -19,8 +20,9 @@ class PirararaImageViewer(QGraphicsView):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        # DBファイル名
-        db_file_path = os.path.join(os.getcwd(), "metadata.db")
+        # 構成情報からDBファイル名取得
+        app_config = AppConfig()
+        db_file_path = app_config.get_db_path()
         # DBクラスを生成
         self.db = MetaDataDB(db_file_path)
 
@@ -41,6 +43,9 @@ class PirararaImageViewer(QGraphicsView):
                 self.graphics_scene.addItem(self.image_item)
                 self.setSceneRect(pixmap.rect())
                 self.fit_in_view()
+
+    def clear_image(self):
+        self.graphics_scene.clear()
 
     def fit_in_view(self):
         if self.image_item is not None:

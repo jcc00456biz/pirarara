@@ -5,6 +5,7 @@ import os
 import shutil
 from datetime import datetime
 
+from pkg.config import AppConfig
 from pkg.metadata import MetaDataDB
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem
@@ -20,8 +21,9 @@ class PirararaTableWidget(QTableWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        # DBファイル名
-        db_file_path = os.path.join(os.getcwd(), "metadata.db")
+        # 構成情報からDBファイル名取得
+        app_config = AppConfig()
+        db_file_path = app_config.get_db_path()
         # DBクラスを生成
         self.db = MetaDataDB(db_file_path)
 
@@ -120,8 +122,9 @@ class PirararaTableWidget(QTableWidget):
         selected_items = self.selectedItems()
         for item in selected_items:
             db_id = int(item.text())
+            if db_id > 0:
+                self.item_selected.emit(db_id)
             break
-        self.item_selected.emit(db_id)
 
     def get_form_db(
         self, column: str | None = None, keyword: str | None = None

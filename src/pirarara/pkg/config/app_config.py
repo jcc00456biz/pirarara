@@ -8,7 +8,7 @@ import platform
 from pkg.const import __appname__
 from PySide6.QtCore import QByteArray
 
-DEBUG = True
+DEBUG = False
 
 
 class AppConfig:
@@ -46,6 +46,14 @@ class AppConfig:
         self.config = configparser.ConfigParser()
 
         # アプリケーション情報（デフォルト値）
+        cfg_dir = os.path.dirname(self.cfg_path)
+
+        self.config["APP_INFO"] = {
+            "log_dir": os.path.join(cfg_dir, "log"),
+            "log": __appname__ + ".log",
+            "db_dir": os.path.join(cfg_dir, "db"),
+            "db": "metadata.db",
+        }
         self.config["APP_GUI"] = {
             "font_size": "14",
             "main_window": "",
@@ -55,9 +63,13 @@ class AppConfig:
 
         # 設定ファイルがない場合は新規で作成する
         if not os.path.exists(self.cfg_path):
-            directory = os.path.dirname(self.cfg_path)
-            if not os.path.exists(directory):
-                os.makedirs(directory)
+            dir_list = [
+                os.path.dirname(self.cfg_path),
+                self.config["APP_INFO"]["log_dir"],
+                self.config["APP_INFO"]["db_dir"],
+            ]
+            for d in dir_list:
+                os.makedirs(d, exist_ok=True)
             self.write_config()
             self.isdefault = True
         else:
@@ -85,3 +97,18 @@ class AppConfig:
             return QByteArray(ast.literal_eval(value))
         except (ValueError, SyntaxError):
             return QByteArray(b"0")
+
+    def get_log_dir(self):
+        return self.config["APP_INFO"]["log_dir"]
+
+    def get_log_file(self):
+        return self.config["APP_INFO"]["log"]
+
+    def get_db_dir(self):
+        return self.config["APP_INFO"]["db_dir"]
+
+    def get_db_file(self):
+        return self.config["APP_INFO"]["db"]
+
+    def get_db_path(self):
+        return os.path.join(self.get_db_dir(), self.get_db_file())

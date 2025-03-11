@@ -4,6 +4,7 @@ import logging
 import os
 import shutil
 
+from pkg.config import AppConfig
 from .db import MetaDataDB
 from .hash import get_file_hash
 from .media_info import (
@@ -33,7 +34,8 @@ def set_media_info(file_path: str) -> int:
     values = list(media_info.values())
 
     # DBファイル名
-    db_file_path = os.path.join(os.getcwd(), "metadata.db")
+    app_config = AppConfig()
+    db_file_path = app_config.get_db_path()
     # DBクラスを生成
     db = MetaDataDB(db_file_path)
 

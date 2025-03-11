@@ -192,6 +192,7 @@ class MWindow(QMainWindow):
             # 表の選択されているデータを削除
             self.tableWidget.delete_selected_items()
             # データ削除に伴い表示を更新
+            self.graphicsView.clear_image()
             self.treeWidget.refresh_display()
             self.tableWidget.get_form_db("", "")
 
