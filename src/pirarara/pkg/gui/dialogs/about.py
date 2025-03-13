@@ -4,6 +4,7 @@ import gc
 import os
 
 from pkg.const import __appname__, __version__
+from pkg.translation import Translate
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QCloseEvent, QPainter, QPixmap
 from PySide6.QtSvg import QSvgRenderer
@@ -27,6 +28,9 @@ class AboutDialog(QDialog):
         """
 
         super().__init__(parent)
+
+        # 翻訳クラスを生成
+        self.tr = Translate()
 
         # 画面タイトルの設定
         self.setWindowTitle(f"{__appname__} {__version__}")
@@ -66,7 +70,9 @@ class AboutDialog(QDialog):
         # 表示する文言
         description = f"{__appname__} {__version__}"
         description += "\n"
-        description += "マルティメディアコンテンツマネージャー"
+        description += self.tr.tr(
+            self.__class__.__name__, "pirarara Multimedia Content Manager."
+        )
         self.about_text.setText(description)
 
     def closeEvent(self, event: QCloseEvent):

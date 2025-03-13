@@ -4,6 +4,7 @@ import logging
 
 from pkg.config import AppConfig
 from pkg.metadata import MetaDataDB
+from pkg.translation import Translate
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QHeaderView, QTreeWidget, QTreeWidgetItem
 
@@ -49,6 +50,9 @@ class PirararaTreeWidget(QTreeWidget):
         db_file_path = app_config.get_db_path()
         # DBクラスを生成
         self.db = MetaDataDB(db_file_path)
+
+        # 翻訳クラスを生成
+        self.tr = Translate()
 
         self.columns = [
             "author",
@@ -120,7 +124,7 @@ class PirararaTreeWidget(QTreeWidget):
             if item_data is not None:
                 for index, dat in enumerate(item_data):
                     text_list = [
-                        dat[0],
+                        self.tr.tr(self.__class__.__name__, dat[0]),
                         str(dat[1]),
                     ]
                     if index == 0:
@@ -166,9 +170,15 @@ class PirararaTreeWidget(QTreeWidget):
         selected_items = self.selectedItems()
         if selected_items:
             selected_item = selected_items[0]
-            column_text = selected_item.text(0)
             parent_item = selected_item.parent()
-            signal_parent_text = parent_item.text(0) if parent_item else ""
+            if parent_item is None:
+                index = self.indexOfTopLevelItem(selected_item)
+                signal_parent_text = self.columns[index]
+                column_text = ""
+            else:
+                index = self.indexOfTopLevelItem(parent_item)
+                signal_parent_text = self.columns[index]
+                column_text = selected_item.text(0)
             logger.info(f"{signal_parent_text} {column_text}")
             self.item_selected.emit(column_text, signal_parent_text)
 
@@ -203,3 +213,4 @@ class PirararaTreeWidget(QTreeWidget):
         """
         self.clear()
         self._setup()
+        self.expandAll()

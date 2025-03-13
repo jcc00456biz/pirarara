@@ -42,8 +42,9 @@ Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "Z:\##MyDevelopment##\pirarara-master\pirarara\windows\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Z:\##MyDevelopment##\pirarara-master\pirarara\windows\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Z:\##MyDevelopment##\pirarara-master\pirarara\src\pirarara\icon\*"; DestDir: "{app}\icon"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "Z:\##MyDevelopment##\pirarara-master\pirarara\src\pirarara\lang\*"; DestDir: "{app}\lang"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -52,4 +53,3 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-

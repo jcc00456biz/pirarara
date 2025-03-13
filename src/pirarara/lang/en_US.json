@@ -1,0 +1,64 @@
+{
+    "note":{
+        "This file is a file that converts character " : "",
+        " strings in the application into various language notations.": "",
+        "Descriptions are grouped for each window or dialog.": "",
+        ".case_insensitive indicates that keys in the group are case insensitive.": "",
+        "このファイルはアプリケーション中の文字列を各種言語表記に変換するファイルです。" : "",
+        "記述は各ウインドウまたはダイアログ事にグループ化されています。": "",
+        ".case_insensitiveはそのグループのキーは大文字小文字を区別しないことを示す。": ""
+    } ,
+    "MWindow":{
+        "IMPORT":                       "IMPORT",
+        "ABOUT":                        "ABOUT",
+        "message":                      "message",
+        "Is it okay to delete this?":   "Is it okay to delete this?"
+
+    },
+    "PirararaTreeWidget":{
+        "TAG":                  "TAG",
+        "PCS":                  "PCS",
+        "author":               "author",
+        "brand":                "brand",
+        "category":             "category",
+        "club":                 "club",
+        "company":              "company",
+        "publisher":            "publisher"
+    },
+    "PirararaTableWidget":{
+        "id":                   "id",
+        "protection":           "protection",
+        "title":                "title",
+        "author":               "author",
+        "series":               "series",
+        "series_index":         "series_index",
+        "category":             "category",
+        "brand":                "brand",
+        "publisher":            "publisher",
+        "company":              "company",
+        "club":                 "club",
+        "description":          "description",
+        "release_date":         "release_date",
+        "price":                "price",
+        "product_number":       "product_number",
+        "jancode":              "jancode",
+        "media_type":           "media_type",
+        "still_width":          "still_width",
+        "still_height":         "still_height",
+        "video_codec_name":     "video_codec_name",
+        "video_width":          "video_width",
+        "video_height":         "video_height",
+        "audio_codec_name":     "audio_codec_name",
+        "audio_sample_rate":    "audio_sample_rate",
+        "duration":             "duration",
+        "save_dir_path":        "save_dir_path",
+        "file_name":            "file_name",
+        "file_hash_algorithm":  "file_hash_algorithm",
+        "file_hash_data":       "file_hash_data",
+        "updated_at":           "updated_at",
+        "created_at":           "created_at"
+    },
+    "AboutDialog":{
+        "pirarara Multimedia Content Manager.": "pirarara Multimedia Content Manager."
+    }
+}

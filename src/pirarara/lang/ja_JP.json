@@ -1,0 +1,63 @@
+{
+    "note":{
+        "This file is a file that converts character " : "",
+        " strings in the application into various language notations.": "",
+        "Descriptions are grouped for each window or dialog.": "",
+        ".case_insensitive indicates that keys in the group are case insensitive.": "",
+        "このファイルはアプリケーション中の文字列を各種言語表記に変換するファイルです。" : "",
+        "記述は各ウインドウまたはダイアログ事にグループ化されています。": "",
+        ".case_insensitiveはそのグループのキーは大文字小文字を区別しないことを示す。": ""
+    } ,
+    "MWindow":{
+        "IMPORT":                       "インポート",
+        "ABOUT":                        "について",
+        "message":                      "メッセージ",
+        "Is it okay to delete this?":   "これを削除しても大丈夫ですか?"
+    },
+    "PirararaTreeWidget":{
+        "TAG":                  "タグ",
+        "PCS":                  "個数",
+        "author":               "著者",
+        "brand":                "ブランド",
+        "category":             "カテゴリ",
+        "club":                 "同人サークル",
+        "company":              "企業",
+        "publisher":            "出版社"
+    },
+    "PirararaTableWidget":{
+        "id":                   "id",
+        "protection":           "保護",
+        "title":                "タイトル",
+        "author":               "著者",
+        "series":               "シリーズ",
+        "series_index":         "シリーズインデックス",
+        "category":             "カテゴリ",
+        "brand":                "ブランド",
+        "publisher":            "出版社",
+        "company":              "企業",
+        "club":                 "同人サークル",
+        "description":          "説明",
+        "release_date":         "リリース日",
+        "price":                "価格",
+        "product_number":       "プロダクトナンバー",
+        "jancode":              "JANコード",
+        "media_type":           "メディアタイプ",
+        "still_width":          "画像横幅",
+        "still_height":         "画像高さ",
+        "video_codec_name":     "動画コーデック",
+        "video_width":          "動画横幅",
+        "video_height":         "動画高さ",
+        "audio_codec_name":     "オーディオコーデック",
+        "audio_sample_rate":    "オーディオサンプリングレート",
+        "duration":             "再生時間",
+        "save_dir_path":        "保存先ディレクトリ",
+        "file_name":            "ファイル名",
+        "file_hash_algorithm":  "ファイルハッシュ形式",
+        "file_hash_data":       "ファイルハッシュ",
+        "updated_at":           "更新日",
+        "created_at":           "作成日"
+    },
+    "AboutDialog":{
+        "pirarara Multimedia Content Manager.": "pirarara マルチメディアコンテンツマネージャー。"
+    }
+}

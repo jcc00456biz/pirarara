@@ -7,6 +7,7 @@ from datetime import datetime
 
 from pkg.config import AppConfig
 from pkg.metadata import MetaDataDB
+from pkg.translation import Translate
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem
 
@@ -22,6 +23,8 @@ class PirararaTableWidget(QTableWidget):
 
     # アイテムが選択された際に発信されるシグナル。選択された項目のデータベースIDを渡します。
     item_selected = Signal(int)
+    # アイテムが変更された際に発信されるシグナル。
+    item_changed = Signal()
 
     def __init__(self, parent=None):
         """
@@ -39,6 +42,9 @@ class PirararaTableWidget(QTableWidget):
         db_file_path = app_config.get_db_path()
         # DBクラスを生成
         self.db = MetaDataDB(db_file_path)
+
+        # 翻訳クラスを生成
+        self.tr = Translate()
 
         # テーブルウィジェットのカラム定義を設定
         db_table_columns = self.db.get_table_columns()
@@ -81,6 +87,11 @@ class PirararaTableWidget(QTableWidget):
 
         # キーのリストを設定
         self.columns_keys = list(self.table_widget_columns.keys())
+        # 翻訳したものを用意
+        self.columns_tr_keys = []
+        for k in self.table_widget_columns.keys():
+            self.columns_tr_keys.append(self.tr.tr(self.__class__.__name__, k))
+
         # テーブルの初期セットアップ
         self._setup()
         # データベースからデータを取得して設定
@@ -96,8 +107,8 @@ class PirararaTableWidget(QTableWidget):
         Returns:
             None
         """
-        self.setColumnCount(len(self.columns_keys))
-        self.setHorizontalHeaderLabels(self.columns_keys)
+        self.setColumnCount(len(self.columns_tr_keys))
+        self.setHorizontalHeaderLabels(self.columns_tr_keys)
         self.resizeColumnsToContents()
         self.setSelectionBehavior(QTableWidget.SelectRows)
         self.setSortingEnabled(True)
@@ -131,6 +142,7 @@ class PirararaTableWidget(QTableWidget):
             return
         db_id = int(item.text())
         self.db.update(db_id, db_column, db_value)
+        self.item_changed.emit()
 
     def on_selection_changed(self):
         """

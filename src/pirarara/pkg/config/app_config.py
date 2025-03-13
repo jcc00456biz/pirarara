@@ -56,7 +56,7 @@ class AppConfig:
                 self.cfg_path = os.path.join(app_dir, cfg_fname)
             else:
                 raise RuntimeError(
-                    "未確認のオペレーティングシステムが検出されました。"
+                    "An unidentified operating system was detected."
                 )
 
         # ConfigParserの設定とデフォルト値の構成
@@ -68,6 +68,7 @@ class AppConfig:
             "log": __appname__ + ".log",
             "db_dir": os.path.join(cfg_dir, "db"),
             "db": "metadata.db",
+            "language": "ja_JP",
         }
         self.config["APP_GUI"] = {
             "font_size": "14",
@@ -186,3 +187,12 @@ class AppConfig:
             str: データベースのパス。
         """
         return os.path.join(self.get_db_dir(), self.get_db_file())
+
+    def get_language(self) -> str:
+        """
+        言語を取得します。
+
+        Returns:
+            str: japanese：日本語、English：英語
+        """
+        return self.config["APP_INFO"]["japanese"]

@@ -8,6 +8,7 @@ from logging.handlers import RotatingFileHandler
 
 from pkg.config import AppConfig
 from pkg.gui import app_run
+from pkg.translation import Translate
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +92,9 @@ def main() -> int:
     """
     # アプリケーション構成ファイル制御クラスを生成
     app_config = AppConfig()
+
+    # 翻訳クラスを生成
+    _ = Translate(os.path.join(os.getcwd(), "lang"))
 
     my_logging_setup(
         app_config.get_log_dir(), app_config.get_log_file(), 100, 4

@@ -14,9 +14,8 @@ from pkg.gui.custom import (
 )
 from pkg.gui.dialogs import AboutDialog, ImportFileDialog
 from pkg.metadata import set_media_info
+from pkg.translation import Translate
 from PySide6.QtCore import QRect, QSize, Qt
-
-# from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QMainWindow,
     QMenuBar,
@@ -56,6 +55,7 @@ class MWindow(QMainWindow):
         menubar (QMenuBar): メニューバー。
         statusbar (QStatusBar): ステータスバー。
     """
+
     def __init__(self):
         """
         MWindowのコンストラクタ。
@@ -67,6 +67,9 @@ class MWindow(QMainWindow):
 
         # アプリケーション構成ファイルアクセスクラス
         self.app_config = AppConfig()
+
+        # 翻訳クラスを生成
+        self.tr = Translate()
 
         # 画面タイトルの設定
         self.setWindowTitle(f"{__appname__} {__version__}")
@@ -87,9 +90,17 @@ class MWindow(QMainWindow):
 
         # ツールボタン定義
         self.tool_button_define = (
-            ("IMPORT", "import.svg", self.show_import_file_dialog),
+            (
+                self.tr.tr(self.__class__.__name__, "IMPORT"),
+                "import.svg",
+                self.show_import_file_dialog,
+            ),
             ("|", "", None),
-            (f"{__appname__} ", "pirarara.svg", self.show_about_dialog),
+            (
+                self.tr.tr(self.__class__.__name__, "ABOUT"),
+                "pirarara.svg",
+                self.show_about_dialog,
+            ),
         )
         # ツールボタン
         self.tool_buttons = []
@@ -163,6 +174,9 @@ class MWindow(QMainWindow):
         self.tableWidget.item_selected.connect(
             self.on_table_widget_item_selected
         )
+        self.tableWidget.item_changed.connect(
+            self.on_table_widget_item_changed
+        )
 
     def _setup(self):
         """
@@ -234,8 +248,10 @@ class MWindow(QMainWindow):
         if event.key() == Qt.Key_Delete and self.tableWidget.hasFocus():
             reply = QMessageBox.question(
                 self,
-                "message",
-                "Is it okay to delete this?",
+                self.tr.tr(self.__class__.__name__, "message"),
+                self.tr.tr(
+                    self.__class__.__name__, "Is it okay to delete this?"
+                ),
                 QMessageBox.Yes | QMessageBox.No,
             )
             if reply == QMessageBox.No:
@@ -297,3 +313,9 @@ class MWindow(QMainWindow):
             db_id (int): 選択されたデータベースID。
         """
         self.graphicsView.show_image(db_id)
+
+    def on_table_widget_item_changed(self):
+        """
+        テーブルウィジェットのアイテム変更時に処理を実行する。
+        """
+        self.treeWidget.refresh_display()
