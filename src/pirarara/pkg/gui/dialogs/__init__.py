@@ -3,8 +3,10 @@
 
 from .about import AboutDialog
 from .import_file import ImportFileDialog
+from .setting import SettingDialog
 
 __all__ = [
-    "AboutDialog",
     "ImportFileDialog",
+    "SettingDialog",
+    "AboutDialog",
 ]

@@ -10,6 +10,7 @@
     } ,
     "MWindow":{
         "IMPORT":                       "インポート",
+        "SETTING":                      "設定",
         "ABOUT":                        "について",
         "message":                      "メッセージ",
         "Is it okay to delete this?":   "これを削除しても大丈夫ですか?"
@@ -56,6 +57,18 @@
         "file_hash_data":       "ファイルハッシュ",
         "updated_at":           "更新日",
         "created_at":           "作成日"
+    },
+    "SettingDialog":{
+        "SETTING":              "設定",
+        "Current library:":     "現在のライブラリ:",
+        "Select new location:": "新しい場所を選択します:",
+        "Language:":            "言語:",
+        "Font size:":           "フォントサイズ:",
+        "select":               "選択",
+        "ok":                   "OK",
+        "cancel":               "キャンセル",
+        "apply":                "適用",
+        "Select Directory":     "ディレクトリ選択"
     },
     "AboutDialog":{
         "pirarara Multimedia Content Manager.": "pirarara マルチメディアコンテンツマネージャー。"

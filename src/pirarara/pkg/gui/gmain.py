@@ -12,7 +12,7 @@ from pkg.gui.custom import (
     PirararaToolButton,
     PirararaTreeWidget,
 )
-from pkg.gui.dialogs import AboutDialog, ImportFileDialog
+from pkg.gui.dialogs import AboutDialog, ImportFileDialog, SettingDialog
 from pkg.metadata import set_media_info
 from pkg.translation import Translate
 from PySide6.QtCore import QRect, QSize, Qt
@@ -94,6 +94,12 @@ class MWindow(QMainWindow):
                 self.tr.tr(self.__class__.__name__, "IMPORT"),
                 "import.svg",
                 self.show_import_file_dialog,
+            ),
+            ("|", "", None),
+            (
+                self.tr.tr(self.__class__.__name__, "SETTING"),
+                "setting.svg",
+                self.show_setting_dialog,
             ),
             ("|", "", None),
             (
@@ -265,9 +271,16 @@ class MWindow(QMainWindow):
 
     def show_about_dialog(self):
         """
-        「About」ダイアログを表示する。
+        Aboutダイアログを表示する。
         """
         dialog = AboutDialog(self)
+        dialog.exec()
+
+    def show_setting_dialog(self):
+        """
+        Settingダイアログを表示する。
+        """
+        dialog = SettingDialog(self)
         dialog.exec()
 
     def show_import_file_dialog(self):

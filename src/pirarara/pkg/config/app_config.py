@@ -7,6 +7,7 @@ import platform
 
 from pkg.const import __appname__
 from PySide6.QtCore import QByteArray
+from PySide6.QtGui import QFont, QFontDatabase
 
 DEBUG = False
 
@@ -193,6 +194,37 @@ class AppConfig:
         言語を取得します。
 
         Returns:
-            str: japanese：日本語、English：英語
+            str: ja_JP：日本語、en_US：英語
         """
-        return self.config["APP_INFO"]["japanese"]
+        return self.config["APP_INFO"]["language"]
+
+    def get_font_size(self) -> str:
+        """
+        フォントサイズを取得します。
+
+        Returns:
+            str: フォントサイズ
+        """
+        return self.config["APP_GUI"]["font_size"]
+
+    def get_app_font(self) -> QFont:
+        """
+        Qフォントクラスを生成します。
+
+        Returns:
+            QFont: QFontクラスインスタンス
+        """
+        font = QFont()
+        font.setPointSize(int(self.get_font_size()))
+        return font
+
+    def get_app_font_sizes(self) -> list:
+        """
+        フォントサイズリストの取得。
+
+        Returns:
+            list: フォントサイズのリスト
+        """
+        font = QFont()
+        font_db = QFontDatabase()
+        return list(map(str, font_db.pointSizes(font.family())))

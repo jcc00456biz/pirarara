@@ -10,6 +10,7 @@
     } ,
     "MWindow":{
         "IMPORT":                       "IMPORT",
+        "SETTING":                      "SETTING",
         "ABOUT":                        "ABOUT",
         "message":                      "message",
         "Is it okay to delete this?":   "Is it okay to delete this?"
@@ -57,6 +58,18 @@
         "file_hash_data":       "file_hash_data",
         "updated_at":           "updated_at",
         "created_at":           "created_at"
+    },
+    "SettingDialog":{
+        "SETTING":              "SETTING",
+        "Current library:":     "Current library:",
+        "Select new location:": "Select new location:",
+        "Language:":            "Language:",
+        "Font size:":           "Font size:",
+        "select":               "select",
+        "ok":                   "ok",
+        "cancel":               "cancel",
+        "apply":                "apply",
+        "Select Directory":     "Select Directory"
     },
     "AboutDialog":{
         "pirarara Multimedia Content Manager.": "pirarara Multimedia Content Manager."

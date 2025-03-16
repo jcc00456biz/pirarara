@@ -94,7 +94,8 @@ def main() -> int:
     app_config = AppConfig()
 
     # 翻訳クラスを生成
-    _ = Translate(os.path.join(os.getcwd(), "lang"))
+    path = os.path.join(os.getcwd(), "lang")
+    _ = Translate(path, app_config.get_language())
 
     my_logging_setup(
         app_config.get_log_dir(), app_config.get_log_file(), 100, 4
