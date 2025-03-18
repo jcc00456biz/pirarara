@@ -66,12 +66,20 @@
         "Language:":            "Language:",
         "Font size:":           "Font size:",
         "select":               "select",
-        "ok":                   "ok",
-        "cancel":               "cancel",
-        "apply":                "apply",
+        "ok":                   "Ok",
+        "cancel":               "Cancel",
+        "apply":                "Apply",
         "Select Directory":     "Select Directory"
     },
     "AboutDialog":{
         "pirarara Multimedia Content Manager.": "pirarara Multimedia Content Manager."
+    },
+    "PirararaBasePlugin":{
+        "Under processing":     "Under processing",
+        "cancel":               "Cancel"
+    },
+    "ImportFilePlugin":{
+        "Under processing":     "Under processing",
+        "cancel":               "Cancel"
     }
 }

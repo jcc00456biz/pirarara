@@ -12,8 +12,8 @@ from pkg.gui.custom import (
     PirararaToolButton,
     PirararaTreeWidget,
 )
-from pkg.gui.dialogs import AboutDialog, ImportFileDialog, SettingDialog
-from pkg.metadata import set_media_info
+from pkg.gui.dialogs import AboutDialog, OpenFileDialog, SettingDialog
+from pkg.gui.plugins import ImportFilePlugin, PirararaBasePlugin
 from pkg.translation import Translate
 from PySide6.QtCore import QRect, QSize, Qt
 from PySide6.QtWidgets import (
@@ -106,6 +106,12 @@ class MWindow(QMainWindow):
                 self.tr.tr(self.__class__.__name__, "ABOUT"),
                 "pirarara.svg",
                 self.show_about_dialog,
+            ),
+            ("|", "", None),
+            (
+                self.tr.tr(self.__class__.__name__, "TITLE"),
+                "title.svg",
+                self.show_title_dialog,
             ),
         )
         # ツールボタン
@@ -287,14 +293,14 @@ class MWindow(QMainWindow):
         """
         ファイルインポートダイアログを表示し、選択されたファイルを処理する。
         """
-        dialog = ImportFileDialog(self)
+        dialog = OpenFileDialog(self)
         selected_files = dialog.get_selected_file()
 
-        for fname in selected_files:
-            set_media_info(fname)
-
-        self.treeWidget.refresh_display()
-        self.tableWidget.get_form_db("", "")
+        if len(selected_files) != 0:
+            plugin = ImportFilePlugin(selected_files)
+            plugin.exec()
+            self.treeWidget.refresh_display()
+            self.tableWidget.get_form_db("", "")
 
     def on_combo_box_editing(self, text: str):
         """
@@ -332,3 +338,10 @@ class MWindow(QMainWindow):
         テーブルウィジェットのアイテム変更時に処理を実行する。
         """
         self.treeWidget.refresh_display()
+
+    def show_title_dialog(self):
+        """
+        Settingダイアログを表示する。
+        """
+        dialog = PirararaBasePlugin(1000)
+        dialog.exec()

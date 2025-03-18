@@ -11,6 +11,7 @@
     "MWindow":{
         "IMPORT":                       "インポート",
         "SETTING":                      "設定",
+        "TITLE":                        "タイトル",
         "ABOUT":                        "について",
         "message":                      "メッセージ",
         "Is it okay to delete this?":   "これを削除しても大丈夫ですか?"
@@ -72,5 +73,13 @@
     },
     "AboutDialog":{
         "pirarara Multimedia Content Manager.": "pirarara マルチメディアコンテンツマネージャー。"
+    },
+    "PirararaBasePlugin":{
+        "Under processing":     "処理中",
+        "cancel":               "キャンセル"
+    },
+    "ImportFilePlugin":{
+        "Under processing":     "処理中",
+        "cancel":               "キャンセル"
     }
 }

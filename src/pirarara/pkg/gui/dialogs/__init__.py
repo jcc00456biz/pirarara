@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from .about import AboutDialog
-from .import_file import ImportFileDialog
+from .open_file import OpenFileDialog
 from .setting import SettingDialog
 
 __all__ = [
-    "ImportFileDialog",
+    "OpenFileDialog",
     "SettingDialog",
     "AboutDialog",
 ]
