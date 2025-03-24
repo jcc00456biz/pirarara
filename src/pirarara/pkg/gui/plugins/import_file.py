@@ -21,7 +21,8 @@ class ImportFilePlugin(PirararaBasePlugin):
         super().__init__(self.action_counts)
 
     def do_action(self):
-        fname = self.files[self.current_count]
-        self.msg_label.setText(os.path.basename(fname))
-        set_media_info(fname)
+        if self.current_count < len(self.files):
+            fname = self.files[self.current_count]
+            self.msg_label.setText(os.path.basename(fname))
+            set_media_info(fname)
         super().do_action()

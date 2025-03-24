@@ -12,7 +12,12 @@ from pkg.gui.custom import (
     PirararaToolButton,
     PirararaTreeWidget,
 )
-from pkg.gui.dialogs import AboutDialog, OpenFileDialog, SettingDialog
+from pkg.gui.dialogs import (
+    AboutDialog,
+    OpenFileDialog,
+    PluginsDialog,
+    SettingDialog,
+)
 from pkg.gui.plugins import ImportFilePlugin, PirararaBasePlugin
 from pkg.translation import Translate
 from PySide6.QtCore import QRect, QSize, Qt
@@ -100,6 +105,11 @@ class MWindow(QMainWindow):
                 self.tr.tr(self.__class__.__name__, "SETTING"),
                 "setting.svg",
                 self.show_setting_dialog,
+            ),
+            (
+                self.tr.tr(self.__class__.__name__, "PLUGINS"),
+                "plugins.svg",
+                self.show_plugins_dialog,
             ),
             ("|", "", None),
             (
@@ -275,20 +285,6 @@ class MWindow(QMainWindow):
             self.treeWidget.refresh_display()
             self.tableWidget.get_form_db("", "")
 
-    def show_about_dialog(self):
-        """
-        Aboutダイアログを表示する。
-        """
-        dialog = AboutDialog(self)
-        dialog.exec()
-
-    def show_setting_dialog(self):
-        """
-        Settingダイアログを表示する。
-        """
-        dialog = SettingDialog(self)
-        dialog.exec()
-
     def show_import_file_dialog(self):
         """
         ファイルインポートダイアログを表示し、選択されたファイルを処理する。
@@ -301,6 +297,27 @@ class MWindow(QMainWindow):
             plugin.exec()
             self.treeWidget.refresh_display()
             self.tableWidget.get_form_db("", "")
+
+    def show_setting_dialog(self):
+        """
+        Settingダイアログを表示する。
+        """
+        dialog = SettingDialog(self)
+        dialog.exec()
+
+    def show_plugins_dialog(self):
+        """
+        Pluginsダイアログを表示する。
+        """
+        dialog = PluginsDialog(self)
+        dialog.exec()
+
+    def show_about_dialog(self):
+        """
+        Aboutダイアログを表示する。
+        """
+        dialog = AboutDialog(self)
+        dialog.exec()
 
     def on_combo_box_editing(self, text: str):
         """

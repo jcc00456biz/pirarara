@@ -11,6 +11,7 @@
     "MWindow":{
         "IMPORT":                       "インポート",
         "SETTING":                      "設定",
+        "PLUGINS":                      "プラグイン",
         "TITLE":                        "タイトル",
         "ABOUT":                        "について",
         "message":                      "メッセージ",
@@ -78,8 +79,19 @@
         "Under processing":     "処理中",
         "cancel":               "キャンセル"
     },
+    "PluginsDialog":{
+        "Add plugins":                      "プラグイン追加",
+        "Remove plugins":                   "プラグイン削除",
+        "ok":                               "OK",
+        "cancel":                           "キャンセル",
+        "The plugin is already installed.": "既にプラグインはインストールされています。",
+        "Invalid ZIP file.":                "無効な ZIP ファイルです。",
+        "An unexpected error occurred.":    "予期しないエラーが発生しました。",
+        "Deletes the selected plugin.":     "選択されたプラグインを削除しまます。"
+    },
     "ImportFilePlugin":{
         "Under processing":     "処理中",
         "cancel":               "キャンセル"
     }
+
 }

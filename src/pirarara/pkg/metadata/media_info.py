@@ -201,7 +201,7 @@ def capture_frame(file_path, output_image_path, time="00:00:01") -> bool:
             ffmpeg
             .input(file_path, ss=time)
             .output(output_image_path, vframes=1)
-            .run()
+            .run(overwrite_output=True)
         )
         return True
     except ffmpeg.Error as e:

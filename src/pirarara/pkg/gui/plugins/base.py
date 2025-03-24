@@ -79,12 +79,15 @@ class PirararaBasePlugin(QDialog):
         self.action_count = action_count
         self.current_count = 0
         self.was_canceled = False
-        # シングルショットタイマを実行
-        QTimer.singleShot(1, self.do_action)
 
     def _close(self):
         gc.collect()
         self.close()
+
+    def exec(self):
+        # シングルショットタイマを実行
+        QTimer.singleShot(1, self.do_action)
+        super().exec()
 
     def handle_button_clicked(self, button):
         standard_button = self.buttonBox.standardButton(button)

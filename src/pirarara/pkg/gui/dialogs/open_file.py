@@ -13,13 +13,20 @@ class OpenFileDialog(QFileDialog):
     既存のファイルを選択するダイアログを提供します。
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        name_filters: list | None = None,
+        file_mode: QFileDialog.FileMode | None = None,
+        parent=None,
+    ):
         """
         コンストラクタ。
 
         ダイアログのタイトル、ファイルモード、初期ディレクトリを設定します。
 
         Args:
+            name_filters (QObject, optional): ファイルフィルタ。デフォルトはNone。
+            file_mode (QObject, optional): ファイルモード。デフォルトはNone。
             parent (QObject, optional): 親ウィジェット。デフォルトはNone。
         """
         super().__init__(parent)
@@ -27,8 +34,15 @@ class OpenFileDialog(QFileDialog):
         # 画面タイトルの設定
         self.setWindowTitle(f"{__appname__} {__version__}")
 
+        # ファイルフィルタの設定
+        if isinstance(name_filters, list):
+            self.setNameFilters(name_filters)
+
         # ファイル選択モードを設定します
-        self.setFileMode(QFileDialog.FileMode.ExistingFiles)
+        if file_mode is None:
+            self.setFileMode(QFileDialog.FileMode.ExistingFiles)
+        else:
+            self.setFileMode(file_mode)
 
         # カレントディレクトリを初期ディレクトリに設定します
         self.setDirectory(os.getcwd())

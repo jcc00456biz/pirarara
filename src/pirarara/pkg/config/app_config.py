@@ -77,6 +77,9 @@ class AppConfig:
             "splitter1": "",
             "splitter2": "",
         }
+        self.config["APP_PLUGINS"] = {
+            "plugins_dir": os.path.join(cfg_dir, "plugins"),
+        }
 
         # 設定ファイルの存在確認と作成
         if not os.path.exists(self.cfg_path):
@@ -84,6 +87,7 @@ class AppConfig:
                 os.path.dirname(self.cfg_path),
                 self.config["APP_INFO"]["log_dir"],
                 self.config["APP_INFO"]["db_dir"],
+                self.config["APP_PLUGINS"]["plugins_dir"],
             ]
             for d in dir_list:
                 os.makedirs(d, exist_ok=True)
@@ -197,6 +201,15 @@ class AppConfig:
             str: ja_JP：日本語、en_US：英語
         """
         return self.config["APP_INFO"]["language"]
+
+    def get_plugins_dir(self) -> str:
+        """
+        Pluginディレクトリのパスを取得します。
+
+        Returns:
+            str: Pluginディレクトリのパス。
+        """
+        return self.config["APP_PLUGINS"]["plugins_dir"]
 
     def get_font_size(self) -> str:
         """
