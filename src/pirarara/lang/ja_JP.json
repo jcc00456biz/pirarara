@@ -14,6 +14,7 @@
         "PLUGINS":                      "プラグイン",
         "TITLE":                        "タイトル",
         "ABOUT":                        "について",
+        "DEBUG":                        "デバック",
         "message":                      "メッセージ",
         "Is it okay to delete this?":   "これを削除しても大丈夫ですか?"
     },

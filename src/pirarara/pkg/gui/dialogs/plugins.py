@@ -13,21 +13,13 @@ from pkg.gui.custom import (
     question_message_box,
 )
 from pkg.translation import Translate
-from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import QCloseEvent, QPainter, QPixmap
-from PySide6.QtSvg import QSvgRenderer
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QComboBox,
     QDialog,
     QDialogButtonBox,
     QFileDialog,
-    QFormLayout,
-    QGridLayout,
     QHBoxLayout,
-    QLabel,
-    QLineEdit,
     QListWidget,
-    QMessageBox,
     QPushButton,
     QSizePolicy,
     QSpacerItem,
@@ -95,14 +87,9 @@ class PluginsDialog(QDialog):
         # ボタンボックス
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QDialogButtonBox.StandardButton.Cancel
-            | QDialogButtonBox.StandardButton.Ok
-        )
+        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Ok)
         btn = self.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
         btn.setText(self.tr.tr(self.__class__.__name__, "ok"))
-        btn = self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel)
-        btn.setText(self.tr.tr(self.__class__.__name__, "cancel"))
         self.formLayout.addWidget(self.buttonBox)
 
         # インストール済プラグインリスト表示
@@ -115,9 +102,7 @@ class PluginsDialog(QDialog):
 
     def handle_button_clicked(self, button):
         standard_button = self.buttonBox.standardButton(button)
-        if standard_button == QDialogButtonBox.StandardButton.Cancel:
-            self.reject()
-        elif standard_button == QDialogButtonBox.StandardButton.Ok:
+        if standard_button == QDialogButtonBox.StandardButton.Ok:
             self.accept()
 
     def add_plugins_clicked(self):

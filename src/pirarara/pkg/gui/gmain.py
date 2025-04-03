@@ -18,7 +18,11 @@ from pkg.gui.dialogs import (
     PluginsDialog,
     SettingDialog,
 )
-from pkg.gui.plugins import ImportFilePlugin, PirararaBasePlugin
+from pkg.gui.plugins import (
+    ExternalPlugins,
+    ImportFilePlugin,
+    PirararaBasePlugin,
+)
 from pkg.translation import Translate
 from PySide6.QtCore import QRect, QSize, Qt
 from PySide6.QtWidgets import (
@@ -119,9 +123,9 @@ class MWindow(QMainWindow):
             ),
             ("|", "", None),
             (
-                self.tr.tr(self.__class__.__name__, "TITLE"),
-                "title.svg",
-                self.show_title_dialog,
+                self.tr.tr(self.__class__.__name__, "DEBUG"),
+                "debug.svg",
+                self.show_debug_dialog,
             ),
         )
         # ツールボタン
@@ -362,3 +366,11 @@ class MWindow(QMainWindow):
         """
         dialog = PirararaBasePlugin(1000)
         dialog.exec()
+
+    def show_debug_dialog(self):
+        ext_plugins = ExternalPlugins()
+        plugin = ext_plugins.load_plugins()
+        # プラグインのsetting呼び出し
+        plugin.setting()
+        # プラグインのdo_action呼び出し
+        plugin.do_action()

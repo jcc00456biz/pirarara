@@ -11,7 +11,9 @@
     "MWindow":{
         "IMPORT":                       "IMPORT",
         "SETTING":                      "SETTING",
+        "TITLE":                        "TITLE",
         "ABOUT":                        "ABOUT",
+        "DEBUG":                        "DEBUG",
         "message":                      "message",
         "Is it okay to delete this?":   "Is it okay to delete this?"
 
